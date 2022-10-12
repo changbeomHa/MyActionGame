@@ -25,9 +25,11 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private bool isLockedTarget;
     [SerializeField] private bool isStunned;
     [SerializeField] private bool isWaiting = true;
+    [SerializeField] private bool BOSS = false;
 
-    [Header("파티클")]
+    [Header("파티클, 오브젝트")]
     [SerializeField] private ParticleSystem counterParticle;
+
 
     private Coroutine PrepareAttackCoroutine;
     private Coroutine RetreatCoroutine;
@@ -114,7 +116,20 @@ public class EnemyScript : MonoBehaviour
             }
 
             StartCoroutine(HitStop());
-            animator.SetTrigger("Hit");
+
+            // boss가 아닌 일반 몹
+            if(playerCombat.nowPowerful)
+                animator.SetTrigger("CriticalHit");
+            else
+            {
+                if (playerCombat.animationCount == 0 )
+                    animator.SetTrigger("RightHit");
+                else if (playerCombat.animationCount == 2)
+                    animator.SetTrigger("LeftHit");
+                else animator.SetTrigger("Hit"); // 발차기는 머리 휘청
+            }
+
+
             transform.DOMove(transform.position - (transform.forward / 2), .3f).SetDelay(.1f);
 
             StopMoving();

@@ -53,7 +53,7 @@ public class CombatScript : MonoBehaviour
     public UnityEvent<EnemyScript> OnCounterAttack;
 
     // 애니메이션 변수
-    int animationCount = 0;
+    public int animationCount = 0;
     string[] attackMotions;
 
 
@@ -102,7 +102,7 @@ public class CombatScript : MonoBehaviour
     public void Attack(EnemyScript target, float distance)
     {
         // 여기에 공격 애니메이션 변수들을 적는다.
-        attackMotions = new string[] { "Left jab", "Right Punch", "CrescentKick", "MmaKick" };
+        attackMotions = new string[] { "Left jab", "CrescentKick", "Right Punch", "MmaKick" };
 
         if (distance < 4 && Attackable)
         {
