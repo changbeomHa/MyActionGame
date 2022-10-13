@@ -9,7 +9,6 @@ using UnityEditor;
 namespace SIGGRAPH_2018 {
 	[RequireComponent(typeof(Actor))]
 	public class BioAnimation_Adam : MonoBehaviour {
-
 		public bool Inspect = false;
 
 		public bool ShowTrajectory = true;
@@ -331,9 +330,55 @@ namespace SIGGRAPH_2018 {
 			//Assign Posture
 			transform.position = nextRoot.GetPosition();
 			transform.rotation = nextRoot.GetRotation();
+
 			for(int i=0; i<Actor.Bones.Length; i++) {
 				Actor.Bones[i].Transform.position = Positions[i];
 				Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);
+
+				float x = this.gameObject.GetComponent<temp>().a;
+				float y = this.gameObject.GetComponent<temp>().b;
+				float z = this.gameObject.GetComponent<temp>().c;
+
+				// left arm add rotation
+				if (i >= 9 && i <= 12)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
+
+				// left hand add rotation
+				if (i >= 11 && i <= 12)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(0, 180, 0));
+
+				// right arm add rotation
+				if (i >= 14 && i <= 17)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-135, 0, -90));
+
+				// right hand add rotation
+				if (i >= 14 && i <= 17)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(0, -180, 0));
+
+				// left leg add rotation
+				if (i >= 18 && i <= 20)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(180, 180, 0));
+
+				// left foot add rotation
+				if (i >= 20 && i <= 20)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(135, 135, 135));
+
+				// left toe add rotation
+				if (i >= 21 && i <= 22)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, -45, -130));
+
+				// right leg add rotation
+				if (i >= 23 && i <= 25)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-180, -180, 0));
+
+				// right foot add rotation
+				if (i >= 25 && i <= 25)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(50, 0, 0));
+
+				// right toe add rotation
+				if (i >= 26 && i <= 27)
+					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
+
 			}
 		}
 
