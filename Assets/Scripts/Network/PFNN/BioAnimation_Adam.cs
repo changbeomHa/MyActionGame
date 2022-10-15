@@ -62,7 +62,8 @@ namespace SIGGRAPH_2018 {
 			Ups = new Vector3[Actor.Bones.Length];
 			Velocities = new Vector3[Actor.Bones.Length];
 			Trajectory = new Trajectory(Points, Controller.GetNames(), transform.position, TargetDirection);
-			if(Controller.Styles.Length > 0) {
+			Trajectory.Postprocess(); // post process for foot ik with ground
+			if (Controller.Styles.Length > 0) {
 				for(int i=0; i<Trajectory.Points.Length; i++) {
 					Trajectory.Points[i].Styles[0] = 1f;
 				}
@@ -155,12 +156,18 @@ namespace SIGGRAPH_2018 {
 				Utility.Normalise(ref Trajectory.Points[i].Styles);
 				Trajectory.Points[i].SetSpeed(Utility.Interpolate(Trajectory.Points[i].GetSpeed(), TargetVelocity.magnitude, control ? TargetGain : TargetDecay));
 			}
+
+			// post process for foot ik with ground
+			for (int i = RootPointIndex + PointDensity; i < Trajectory.Points.Length; i += PointDensity)
+			{
+				Trajectory.Points[i].Postprocess();
+			}
 		}
 
 		private void Animate() {
 			//Calculate Root
 			Matrix4x4 currentRoot = Trajectory.Points[RootPointIndex].GetTransformation();
-			currentRoot[1,3] = 0f; //For flat terrain
+			// currentRoot[1,3] = 0f; //For flat terrain
 
 			int start = 0;
 			//Input Trajectory Positions / Directions / Velocities / Styles
@@ -183,7 +190,7 @@ namespace SIGGRAPH_2018 {
 			start += TrajectoryDimIn*PointSamples;
 
 			Matrix4x4 previousRoot = Trajectory.Points[RootPointIndex-1].GetTransformation();
-			previousRoot[1,3] = 0f; //For flat terrain
+			// previousRoot[1,3] = 0f; //For flat terrain
 
 			//Input Previous Bone Positions / Velocities
 			for(int i=0; i<Actor.Bones.Length; i++) {
@@ -233,8 +240,9 @@ namespace SIGGRAPH_2018 {
 			Trajectory.Points[RootPointIndex].SetPosition(translationalOffset.GetRelativePositionFrom(currentRoot));
 			Trajectory.Points[RootPointIndex].SetDirection(Quaternion.AngleAxis(rotationalOffset, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection());
 			Trajectory.Points[RootPointIndex].SetVelocity(translationalOffset.GetRelativeDirectionFrom(currentRoot) * Framerate);
+			Trajectory.Points[RootPointIndex].Postprocess(); // post process for foot ik with ground
 			Matrix4x4 nextRoot = Trajectory.Points[RootPointIndex].GetTransformation();
-			nextRoot[1,3] = 0f; //For flat terrain
+			// nextRoot[1,3] = 0f; //For flat terrain
 
 			//Update Future Trajectory
 			for(int i=RootPointIndex+1; i<Trajectory.Points.Length; i++) {
@@ -242,6 +250,13 @@ namespace SIGGRAPH_2018 {
 				Trajectory.Points[i].SetDirection(Quaternion.AngleAxis(rotationalOffset, Vector3.up) * Trajectory.Points[i].GetDirection());
 				Trajectory.Points[i].SetVelocity(Trajectory.Points[i].GetVelocity() + translationalOffset.GetRelativeDirectionFrom(nextRoot) * Framerate);
 			}
+
+			// post process for foot ik with ground
+			for (int i = RootPointIndex; i < Trajectory.Points.Length; i += PointDensity)
+			{
+				Trajectory.Points[i].Postprocess();
+			}
+
 			start = 0;
 			for(int i=RootPointIndex+1; i<Trajectory.Points.Length; i++) {
 				//ROOT	1		2		3		4		5
