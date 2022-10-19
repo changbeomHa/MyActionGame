@@ -40,7 +40,7 @@ namespace SIGGRAPH_2018 {
 		private Vector3[] Velocities = new Vector3[0];
 
 		//Trajectory for 60 Hz framerate
-		private const int Framerate = 60;
+		private const int Framerate = 30; // default value is 60
 		private const int Points = 111;
 		private const int PointSamples = 12;
 		private const int PastPoints = 60;
@@ -87,19 +87,25 @@ namespace SIGGRAPH_2018 {
 		}
 
 		void Update() {
-			if(NN.Parameters == null) {
-				return;
-			}
+			if (!ControlManager.isBasicControl)
+			{
+				if (NN.Parameters == null)
+				{
+					return;
+				}
 
-			if(TrajectoryControl) {
-				PredictTrajectory();
-			}
+				if (TrajectoryControl)
+				{
+					PredictTrajectory();
+				}
 
-			if(NN.Parameters != null) {
-				Animate();
-			}
+				if (NN.Parameters != null)
+				{
+					Animate();
+				}
 
-			transform.position = Trajectory.Points[RootPointIndex].GetPosition();
+				transform.position = Trajectory.Points[RootPointIndex].GetPosition();
+			}
 		}
 
 		private void PredictTrajectory() {
@@ -299,7 +305,7 @@ namespace SIGGRAPH_2018 {
 				).GetRelativeDirectionFrom(nextRoot);
 
 				Vector3 pos = (1f - factor) * prevPos + factor * nextPos;
-				Vector3 dir = ((1f - factor) * prevDir + factor * nextDir).normalized;
+				Vector3 dir = ((1f - factor) * (prevDir + RotationByCamera()) + factor * (nextDir + RotationByCamera())).normalized;
 				Vector3 vel = (1f - factor) * prevVel + factor * nextVel;
 
 				pos = Vector3.Lerp(Trajectory.Points[i].GetPosition() + vel / Framerate, pos, 0.5f);
@@ -393,8 +399,14 @@ namespace SIGGRAPH_2018 {
 				// right toe add rotation
 				if (i >= 26 && i <= 27)
 					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
-
 			}
+		}
+
+		private Vector3 RotationByCamera()
+        {
+			var camera = Camera.main;
+			var forward = camera.transform.forward;
+			return forward;
 		}
 
 		private float PoolBias() {
