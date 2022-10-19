@@ -248,10 +248,14 @@ public class CombatScript : MonoBehaviour
         heartbeatRate.txtScore.text = heartbeatRate.currentHeartRate.ToString();
         Time.timeScale = 1f;
     }
+    public int DamageNumber;
     // ÇÇ°Ý
     public void DamageEvent()
     {
-        animator.SetTrigger("Hit");
+        if(DamageNumber == 1)
+            animator.SetTrigger("FallDown");
+        else
+            animator.SetTrigger("Hit");
 
         if (damageCoroutine != null)
             StopCoroutine(damageCoroutine);
@@ -307,7 +311,6 @@ public class CombatScript : MonoBehaviour
         }
     }
 
-
     EnemyScript ClosestCounterEnemy()
     {
         float minDistance = 100;
@@ -319,6 +322,7 @@ public class CombatScript : MonoBehaviour
 
             if (enemy.IsPreparingAttack())
             {
+
                 if (Vector3.Distance(transform.position, enemy.transform.position) < minDistance)
                 {
                     minDistance = Vector3.Distance(transform.position, enemy.transform.position);

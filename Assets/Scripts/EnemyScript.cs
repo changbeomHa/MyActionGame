@@ -25,7 +25,6 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private bool isLockedTarget;
     [SerializeField] private bool isStunned;
     [SerializeField] private bool isWaiting = true;
-    [SerializeField] private bool BOSS = false;
 
     [Header("파티클, 오브젝트")]
     [SerializeField] private ParticleSystem counterParticle;
@@ -137,7 +136,7 @@ public class EnemyScript : MonoBehaviour
         IEnumerator HitStop()
         {
             yield return new WaitForSeconds(0.3f);
-            timestop.StopTime(0.1f, 10, 0.5f);
+            //timestop.StopTime(0.1f, 10, 0.5f);
 
         }
 
@@ -282,11 +281,15 @@ public class EnemyScript : MonoBehaviour
                 PrepareAttack(false);
         }
     }
-
+    public int ran;
     private void Attack()
     {
         transform.DOMove(transform.position + (transform.forward / 1), .5f);
-        animator.SetTrigger("AirPunch");
+        ran = Random.Range(0, 5);
+        playerCombat.DamageNumber = ran;
+        if(ran == 1)
+            animator.SetTrigger("LowKick");
+        else animator.SetTrigger("Punch");
     }
 
     public void HitEvent()
