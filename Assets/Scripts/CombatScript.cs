@@ -53,7 +53,7 @@ public class CombatScript : MonoBehaviour
     public UnityEvent<EnemyScript> OnCounterAttack;
 
     // 애니메이션 변수
-    int animationCount = 0;
+    public int animationCount = 0;
     string[] attackMotions;
 
 
@@ -102,7 +102,7 @@ public class CombatScript : MonoBehaviour
     public void Attack(EnemyScript target, float distance)
     {
         // 여기에 공격 애니메이션 변수들을 적는다.
-        attackMotions = new string[] { "Left jab", "Right Punch", "CrescentKick", "MmaKick" };
+        attackMotions = new string[] { "Left jab", "CrescentKick", "Right Punch", "MmaKick" };
 
         if (distance < 4 && Attackable)
         {
@@ -248,10 +248,14 @@ public class CombatScript : MonoBehaviour
         heartbeatRate.txtScore.text = heartbeatRate.currentHeartRate.ToString();
         Time.timeScale = 1f;
     }
+    public int DamageNumber;
     // 피격
     public void DamageEvent()
     {
-        animator.SetTrigger("Hit");
+        if(DamageNumber == 1)
+            animator.SetTrigger("FallDown");
+        else
+            animator.SetTrigger("Hit");
 
         if (damageCoroutine != null)
             StopCoroutine(damageCoroutine);
@@ -307,7 +311,6 @@ public class CombatScript : MonoBehaviour
         }
     }
 
-
     EnemyScript ClosestCounterEnemy()
     {
         float minDistance = 100;
@@ -319,6 +322,7 @@ public class CombatScript : MonoBehaviour
 
             if (enemy.IsPreparingAttack())
             {
+
                 if (Vector3.Distance(transform.position, enemy.transform.position) < minDistance)
                 {
                     minDistance = Vector3.Distance(transform.position, enemy.transform.position);

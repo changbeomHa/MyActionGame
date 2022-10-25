@@ -26,8 +26,9 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private bool isStunned;
     [SerializeField] private bool isWaiting = true;
 
-    [Header("파티클")]
+    [Header("파티클, 오브젝트")]
     [SerializeField] private ParticleSystem counterParticle;
+
 
     private Coroutine PrepareAttackCoroutine;
     private Coroutine RetreatCoroutine;
@@ -114,7 +115,20 @@ public class EnemyScript : MonoBehaviour
             }
 
             StartCoroutine(HitStop());
-            animator.SetTrigger("Hit");
+
+            // boss가 아닌 일반 몹
+            if(playerCombat.nowPowerful)
+                animator.SetTrigger("CriticalHit");
+            else
+            {
+                if (playerCombat.animationCount == 0 )
+                    animator.SetTrigger("RightHit");
+                else if (playerCombat.animationCount == 2)
+                    animator.SetTrigger("LeftHit");
+                else animator.SetTrigger("Hit"); // 발차기는 머리 휘청
+            }
+
+
             transform.DOMove(transform.position - (transform.forward / 2), .3f).SetDelay(.1f);
 
             StopMoving();
@@ -122,7 +136,7 @@ public class EnemyScript : MonoBehaviour
         IEnumerator HitStop()
         {
             yield return new WaitForSeconds(0.3f);
-            timestop.StopTime(0.1f, 10, 0.5f);
+            //timestop.StopTime(0.1f, 10, 0.5f);
 
         }
 
@@ -267,11 +281,15 @@ public class EnemyScript : MonoBehaviour
                 PrepareAttack(false);
         }
     }
-
+    public int ran;
     private void Attack()
     {
         transform.DOMove(transform.position + (transform.forward / 1), .5f);
-        animator.SetTrigger("AirPunch");
+        ran = Random.Range(0, 5);
+        playerCombat.DamageNumber = ran;
+        if(ran == 1)
+            animator.SetTrigger("LowKick");
+        else animator.SetTrigger("Punch");
     }
 
     public void HitEvent()
