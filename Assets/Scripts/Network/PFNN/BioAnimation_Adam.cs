@@ -86,29 +86,27 @@ namespace SIGGRAPH_2018 {
 			Utility.SetFPS(60);
 		}
 
-		void Update() {
-			if (!ControlManager.isBasicControl)
+		void Update()
+		{
+			if (NN.Parameters == null)
 			{
-				if (NN.Parameters == null)
-				{
-					return;
-				}
-
-				if (TrajectoryControl)
-				{
-					PredictTrajectory();
-				}
-
-				if (NN.Parameters != null)
-				{
-					Animate();
-				}
-
-				transform.position = Trajectory.Points[RootPointIndex].GetPosition();
+				return;
 			}
+
+			if (TrajectoryControl)
+			{
+				PredictTrajectory();
+			}
+
+			if (NN.Parameters != null)
+			{
+				Animate();
+			}
+
+			transform.position = Trajectory.Points[RootPointIndex].GetPosition();
 		}
 
-		private void PredictTrajectory() {
+        private void PredictTrajectory() {
 			//Calculate Bias
 			float bias = PoolBias();
 
@@ -224,8 +222,11 @@ namespace SIGGRAPH_2018 {
 			((PFNN)NN).SetDamping(1f - (rest * 0.9f + 0.1f));
 			NN.Predict();
 
+			// Player Attacking
+			Vector3 AttackRotation = ControlManager.isBasicControl ? ControlManager.targetVector : new Vector3(0, 0, 0);
+
 			//Update Past Trajectory
-			for(int i=0; i<RootPointIndex; i++) {
+			for (int i=0; i<RootPointIndex; i++) {
 				Trajectory.Points[i].SetPosition(Trajectory.Points[i+1].GetPosition());
 				Trajectory.Points[i].SetDirection(Trajectory.Points[i+1].GetDirection());
 				Trajectory.Points[i].SetVelocity(Trajectory.Points[i+1].GetVelocity());
@@ -244,7 +245,7 @@ namespace SIGGRAPH_2018 {
 			rotationalOffset = rest * rootMotion.y;
 
 			Trajectory.Points[RootPointIndex].SetPosition(translationalOffset.GetRelativePositionFrom(currentRoot));
-			Trajectory.Points[RootPointIndex].SetDirection(Quaternion.AngleAxis(rotationalOffset, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection());
+			Trajectory.Points[RootPointIndex].SetDirection(Quaternion.AngleAxis(rotationalOffset, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection() + AttackRotation);
 			Trajectory.Points[RootPointIndex].SetVelocity(translationalOffset.GetRelativeDirectionFrom(currentRoot) * Framerate);
 			Trajectory.Points[RootPointIndex].Postprocess(); // post process for foot ik with ground
 			Matrix4x4 nextRoot = Trajectory.Points[RootPointIndex].GetTransformation();
@@ -253,7 +254,7 @@ namespace SIGGRAPH_2018 {
 			//Update Future Trajectory
 			for(int i=RootPointIndex+1; i<Trajectory.Points.Length; i++) {
 				Trajectory.Points[i].SetPosition(Trajectory.Points[i].GetPosition() + rest*translationalOffset.GetRelativeDirectionFrom(nextRoot));
-				Trajectory.Points[i].SetDirection(Quaternion.AngleAxis(rotationalOffset, Vector3.up) * Trajectory.Points[i].GetDirection());
+				Trajectory.Points[i].SetDirection(Quaternion.AngleAxis(rotationalOffset, Vector3.up) * Trajectory.Points[i].GetDirection() + AttackRotation);
 				Trajectory.Points[i].SetVelocity(Trajectory.Points[i].GetVelocity() + translationalOffset.GetRelativeDirectionFrom(nextRoot) * Framerate);
 			}
 
@@ -305,7 +306,7 @@ namespace SIGGRAPH_2018 {
 				).GetRelativeDirectionFrom(nextRoot);
 
 				Vector3 pos = (1f - factor) * prevPos + factor * nextPos;
-				Vector3 dir = ((1f - factor) * (prevDir + RotationByCamera()) + factor * (nextDir + RotationByCamera())).normalized;
+				Vector3 dir = ((1f - factor) * (prevDir + RotationByCamera()) + factor * (nextDir + RotationByCamera() + AttackRotation)).normalized;
 				Vector3 vel = (1f - factor) * prevVel + factor * nextVel;
 
 				pos = Vector3.Lerp(Trajectory.Points[i].GetPosition() + vel / Framerate, pos, 0.5f);
@@ -335,11 +336,11 @@ namespace SIGGRAPH_2018 {
 			start += TrajectoryDimOut*6;
 
 			//Compute Posture
-			for(int i=0; i<Actor.Bones.Length; i++) {
+			for (int i=0; i<Actor.Bones.Length; i++) {
 				Vector3 position = new Vector3(NN.GetOutput(start + i*JointDimOut + 0), NN.GetOutput(start + i*JointDimOut + 1), NN.GetOutput(start + i*JointDimOut + 2)).GetRelativePositionFrom(currentRoot);
 				Vector3 forward = new Vector3(NN.GetOutput(start + i*JointDimOut + 3), NN.GetOutput(start + i*JointDimOut + 4), NN.GetOutput(start + i*JointDimOut + 5)).normalized.GetRelativeDirectionFrom(currentRoot);
 				Vector3 up = new Vector3(NN.GetOutput(start + i*JointDimOut + 6), NN.GetOutput(start + i*JointDimOut + 7), NN.GetOutput(start + i*JointDimOut + 8)).normalized.GetRelativeDirectionFrom(currentRoot);
-				Vector3 velocity = new Vector3(NN.GetOutput(start + i*JointDimOut + 9), NN.GetOutput(start + i*JointDimOut + 10), NN.GetOutput(start + i*JointDimOut + 11)).GetRelativeDirectionFrom(currentRoot);
+				Vector3 velocity = ControlManager.isBasicControl ? new Vector3(0, 0, 0) : new Vector3(NN.GetOutput(start + i*JointDimOut + 9), NN.GetOutput(start + i*JointDimOut + 10), NN.GetOutput(start + i*JointDimOut + 11)).GetRelativeDirectionFrom(currentRoot);
 
 				Positions[i] = Vector3.Lerp(Positions[i] + velocity / Framerate, position, 0.5f);
 				Forwards[i] = forward;
@@ -347,7 +348,13 @@ namespace SIGGRAPH_2018 {
 				Velocities[i] = velocity;
 			}
 			start += JointDimOut*Actor.Bones.Length;
-			
+
+			// Basic Control working
+            if (ControlManager.isBasicControl)
+            {
+				return;
+            }
+
 			//Assign Posture
 			transform.position = nextRoot.GetPosition();
 			transform.rotation = nextRoot.GetRotation();
