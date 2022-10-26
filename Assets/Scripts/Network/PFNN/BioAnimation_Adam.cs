@@ -40,7 +40,7 @@ namespace SIGGRAPH_2018 {
 		private Vector3[] Velocities = new Vector3[0];
 
 		//Trajectory for 60 Hz framerate
-		private const int Framerate = 30; // default value is 60
+		private int Framerate = 30; // default value is 60
 		private const int Points = 111;
 		private const int PointSamples = 12;
 		private const int PastPoints = 60;
@@ -86,7 +86,7 @@ namespace SIGGRAPH_2018 {
 			Utility.SetFPS(60);
 		}
 
-		void Update()
+		void LateUpdate()
 		{
 			if (NN.Parameters == null)
 			{
@@ -223,7 +223,7 @@ namespace SIGGRAPH_2018 {
 			NN.Predict();
 
 			// Player Attacking
-			Vector3 AttackRotation = ControlManager.isBasicControl ? ControlManager.targetVector : new Vector3(0, 0, 0);
+			Vector3 AttackRotation = ControlManager.isAttack ? ControlManager.targetVector : new Vector3(0, 0, 0);
 
 			//Update Past Trajectory
 			for (int i=0; i<RootPointIndex; i++) {
@@ -340,7 +340,7 @@ namespace SIGGRAPH_2018 {
 				Vector3 position = new Vector3(NN.GetOutput(start + i*JointDimOut + 0), NN.GetOutput(start + i*JointDimOut + 1), NN.GetOutput(start + i*JointDimOut + 2)).GetRelativePositionFrom(currentRoot);
 				Vector3 forward = new Vector3(NN.GetOutput(start + i*JointDimOut + 3), NN.GetOutput(start + i*JointDimOut + 4), NN.GetOutput(start + i*JointDimOut + 5)).normalized.GetRelativeDirectionFrom(currentRoot);
 				Vector3 up = new Vector3(NN.GetOutput(start + i*JointDimOut + 6), NN.GetOutput(start + i*JointDimOut + 7), NN.GetOutput(start + i*JointDimOut + 8)).normalized.GetRelativeDirectionFrom(currentRoot);
-				Vector3 velocity = ControlManager.isBasicControl ? new Vector3(0, 0, 0) : new Vector3(NN.GetOutput(start + i*JointDimOut + 9), NN.GetOutput(start + i*JointDimOut + 10), NN.GetOutput(start + i*JointDimOut + 11)).GetRelativeDirectionFrom(currentRoot);
+				Vector3 velocity = ControlManager.isAttack ? new Vector3(0, 0, 0) : new Vector3(NN.GetOutput(start + i*JointDimOut + 9), NN.GetOutput(start + i*JointDimOut + 10), NN.GetOutput(start + i*JointDimOut + 11)).GetRelativeDirectionFrom(currentRoot);
 
 				Positions[i] = Vector3.Lerp(Positions[i] + velocity / Framerate, position, 0.5f);
 				Forwards[i] = forward;
@@ -352,8 +352,13 @@ namespace SIGGRAPH_2018 {
 			// Basic Control working
             if (ControlManager.isBasicControl)
             {
+                if (ControlManager.isDash)
+                {
+					Framerate = 15;
+                }
 				return;
             }
+			Framerate = 30;
 
 			//Assign Posture
 			transform.position = nextRoot.GetPosition();

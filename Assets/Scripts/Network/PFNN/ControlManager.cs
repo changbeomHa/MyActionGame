@@ -8,6 +8,8 @@ public class ControlManager : MonoBehaviour
     private MovementInput movementInput;
     private Animator anim;
 
+    public static bool isDash;
+    public static bool isAttack;
     public static bool isBasicControl;
     public static Vector3 targetVector;
 
@@ -22,7 +24,9 @@ public class ControlManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isBasicControl = combatScript.isAttackingEnemy || combatScript.isCountering || movementInput.isDash;
+        isDash = movementInput.isDash;
+        isAttack = combatScript.isAttackingEnemy || combatScript.isCountering;
+        isBasicControl = isDash || isAttack;
         anim.enabled = isBasicControl;
     }
 }
