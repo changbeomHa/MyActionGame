@@ -166,6 +166,7 @@ public class CombatScript : MonoBehaviour
         OnTrajectory.Invoke(target);
         transform.DOLookAt(target.transform.position, .2f);
         ControlManager.targetVector = (target.transform.position - transform.position).normalized;
+        ControlManager.targetVector -= new Vector3(0, ControlManager.targetVector.y, 0);
     }
 
     // 카운터 공격
