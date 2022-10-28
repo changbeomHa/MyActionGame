@@ -24,9 +24,12 @@ public class ControlManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isDash = movementInput.isDash;
-        isAttack = combatScript.isAttackingEnemy || combatScript.isCountering;
-        isBasicControl = isDash || isAttack;
-        anim.enabled = isBasicControl;
+        if (movementInput.isPFNN)
+        {
+            isDash = movementInput.isDash;
+            isAttack = combatScript.isAttackingEnemy || combatScript.isCountering;
+            isBasicControl = isDash || isAttack;
+            anim.enabled = isBasicControl;
+        }
     }
 }

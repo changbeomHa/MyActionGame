@@ -26,6 +26,7 @@ public class MovementInput : MonoBehaviour
 
 	[Header("Ä¿½ºÅÒ º¯¼ö")]
 	public bool isDash;
+	public bool isPFNN;
 	Vector3 DashVec;
 
     void Start()
@@ -33,13 +34,14 @@ public class MovementInput : MonoBehaviour
 		anim = this.GetComponent<Animator>();
 		cam = Camera.main;
 		controller = this.GetComponent<CharacterController>();
+		isPFNN = this.GetComponent<SIGGRAPH_2018.BioAnimation_Adam>() != null;
 	}
 
 	void Update()
 	{
 		InputMagnitude();
 
-		if (!ControlManager.isBasicControl)
+		if (!ControlManager.isBasicControl && isPFNN)
 		{
 			return;
 		}
@@ -110,12 +112,12 @@ public class MovementInput : MonoBehaviour
 				Dash();
 			}
 
-			if (!ControlManager.isBasicControl)
+			if (!ControlManager.isBasicControl && isPFNN)
 			{
 				return;
 			}
 			anim.SetFloat("InputMagnitude", inputMagnitude * acceleration, .1f, Time.deltaTime);
-			// PlayerMoveAndRotation();
+			PlayerMoveAndRotation();
 		}
 		else
 		{
