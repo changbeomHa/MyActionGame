@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using DG.Tweening;
 using Cinemachine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CombatScript : MonoBehaviour
 {
@@ -15,9 +16,11 @@ public class CombatScript : MonoBehaviour
     private Animator animator;
     public CinemachineImpulseSource impulseSource;
     public HitBox[] hitBox;
+    public Slider HPSlider;
+    public AudioSource[] SFX;
 
     [Header("Target")]
-    private EnemyScript lockedTarget;
+    public EnemyScript lockedTarget;
 
     [Header("스텟")]
     [SerializeField] private float attackCooldown;
@@ -39,6 +42,7 @@ public class CombatScript : MonoBehaviour
     [SerializeField] private Transform criticalHitFocusObject;
     [SerializeField] private GameObject lastHitCamera;
     [SerializeField] private Transform lastHitFocusObject;
+    [SerializeField] private TextMeshProUGUI stateText;
 
     //코루틴
     private Coroutine counterCoroutine;
@@ -66,6 +70,13 @@ public class CombatScript : MonoBehaviour
         enemyDetection = GetComponentInChildren<EnemyDetection>();
         movementInput = GetComponent<MovementInput>();
         impulseSource = GetComponentInChildren<CinemachineImpulseSource>();
+    }
+
+    private void Update()
+    {
+        if (Attackable) stateText.text = "활동".ToString();
+        else stateText.text = "기절".ToString();
+        HPSlider.value = health;
     }
 
     // 공격 키를 호출할 때 실행
@@ -107,6 +118,7 @@ public class CombatScript : MonoBehaviour
         if (distance < 4 && Attackable)
         {
             animationCount = (int)Mathf.Repeat((float)animationCount + 1, (float)attackMotions.Length);
+            
             string attackString = isLastHit()&&distance<2 ? attackMotions[Random.Range(0, attackMotions.Length)] : attackMotions[animationCount];
             AttackType(attackString, attackCooldown, target, .65f);
         }
@@ -134,7 +146,8 @@ public class CombatScript : MonoBehaviour
         if (target == null)
             return;
 
-        target.StopMoving();
+        if(!target.theBOSS)
+            target.StopMoving();
         MoveTorwardsTarget(target, movementDuration);
 
         IEnumerator AttackCoroutine(float duration)
@@ -218,16 +231,22 @@ public class CombatScript : MonoBehaviour
 
     public void HitEvent()
     {
-        if (lockedTarget == null || enemyManager.AliveEnemyCount() == 0)
+        if (enemyManager.AliveEnemyCount() == 0)
             return;
 
         if(hitBox[0].triggerCheck || hitBox[1].triggerCheck || hitBox[2].triggerCheck || hitBox[3].triggerCheck)
         {
-            if(!nowPowerful)
+            Debug.Log("player attack");
+            if (!nowPowerful)
+            {
                 OnHit.Invoke(lockedTarget);
+                SFX[animationCount].Play();
+            }
+                
             else
             {
                 OnHit.Invoke(lockedTarget);
+                SFX[4].Play();
                 StartCoroutine(CriticalBlowCoroutine());
             }
         }
@@ -252,15 +271,20 @@ public class CombatScript : MonoBehaviour
     // 피격
     public void DamageEvent()
     {
-        if(DamageNumber == 1)
-            animator.SetTrigger("FallDown");
-        else
-            animator.SetTrigger("Hit");
+        if(health > 0)
+        {
+            if (DamageNumber == 1)
+                animator.SetTrigger("FallDown");
+            else if (DamageNumber == 6)
+                animator.SetTrigger("FallDownBack");
+            else
+                animator.SetTrigger("Hit");
 
-        if (damageCoroutine != null)
-            StopCoroutine(damageCoroutine);
-        damageCoroutine = StartCoroutine(DamageCoroutine());
-        health--;
+            if (damageCoroutine != null)
+                StopCoroutine(damageCoroutine);
+            damageCoroutine = StartCoroutine(DamageCoroutine());
+            health--;
+        }
 
         if (health <= 0)
         {
@@ -275,10 +299,14 @@ public class CombatScript : MonoBehaviour
                 // 그냥 데미지만 적용
             }
             else
-            {
+            {   
                 movementInput.enabled = false;
-                yield return new WaitForSeconds(.5f);
+                Attackable = false;
+                if (DamageNumber == 1 || DamageNumber == 6)
+                    yield return new WaitForSeconds(2f);
+                else yield return new WaitForSeconds(.5f);
                 movementInput.enabled = true;
+                Attackable = true;
                 LerpCharacterAcceleration();
             }
             

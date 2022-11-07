@@ -60,7 +60,9 @@ MonoBehaviour:
   - 2
   - 3
   comboBonusScore: 10
+  awakeningCombo: 0
   txtCombo: {fileID: 5730073157725244510}
+  awkCombo: {fileID: 0}
 --- !u!95 &8864038596561720860
 Animator:
   serializedVersion: 3

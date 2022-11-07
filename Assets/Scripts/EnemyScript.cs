@@ -6,17 +6,21 @@ using DG.Tweening;
 public class EnemyScript : MonoBehaviour
 {
     //Declarations
-    private Animator animator;
-    private CombatScript playerCombat;
-    private EnemyManager enemyManager;
-    private EnemyDetection enemyDetection;
+    protected Animator animator;
+    protected CombatScript playerCombat;
+    protected EnemyManager enemyManager;
+    protected EnemyDetection enemyDetection;
     private CharacterController characterController;
-    private TimeStop timestop;
+    protected TimeStop timestop;
+    public GameObject shield;
+    public bool hasShield = false;
+    public AudioSource enemySFX;
 
     [Header("스텟")]
-    public int health = 3;
+    public int health = 10;
     private float moveSpeed = 1;
     private Vector3 moveDirection;
+    public bool theBOSS;
 
     [Header("상태")]
     [SerializeField] private bool isPreparingAttack;
@@ -54,8 +58,8 @@ public class EnemyScript : MonoBehaviour
         playerCombat.OnHit.AddListener((x) => OnPlayerHit(x));
         playerCombat.OnCounterAttack.AddListener((x) => OnPlayerCounter(x));
         playerCombat.OnTrajectory.AddListener((x) => OnPlayerTrajectory(x));
-
-        MovementCoroutine = StartCoroutine(EnemyMovement());
+        if(!theBOSS)
+            MovementCoroutine = StartCoroutine(EnemyMovement());
 
     }
 
@@ -86,57 +90,87 @@ public class EnemyScript : MonoBehaviour
     void Update()
     {
         // 적은 항상 플레이어를 바라본다
-        transform.LookAt(new Vector3(playerCombat.transform.position.x, transform.position.y, playerCombat.transform.position.z));
+        if(!theBOSS)
+            transform.LookAt(new Vector3(playerCombat.transform.position.x, transform.position.y, playerCombat.transform.position.z));
         // 방향이 설정되어 있을 때만 이동한다
-        MoveEnemy(moveDirection);
+        if(!theBOSS)
+            MoveEnemy(moveDirection);
     }
 
 
     // 피격
-    void OnPlayerHit(EnemyScript target)
+    protected void OnPlayerHit(EnemyScript target)
     {
         if (target == this)
         {
+            Debug.Log("hit");
             playerCombat.punchParticle.PlayParticleAtPosition(playerCombat.punchPosition.position);
-
-            StopEnemyCoroutines();
+            if(!theBOSS)
+                StopEnemyCoroutines();
             DamageCoroutine = StartCoroutine(HitCoroutine());
 
             enemyDetection.SetCurrentTarget(null);
             isLockedTarget = false;
             OnDamage.Invoke(this);
 
-            health--;
+            if (!hasShield)
+            {
+                if (playerCombat.nowPowerful)
+                    health -= 2;
+                else
+                    health--;
+            }
+            else
+            {
+                if (playerCombat.nowPowerful)
+                {
+                    hasShield = false;
+                    shield.SetActive(false);
+                    health--;
+                }
+            }
+
+            if(health % 5 == 0 && health != 0)
+            {
+                hasShield = true;
+                shield.SetActive(true);
+            }
 
             if (health <= 0)
             {
-                Death();
+                StartCoroutine(Death());
                 return;
             }
 
-            StartCoroutine(HitStop());
+            
 
             // boss가 아닌 일반 몹
-            if(playerCombat.nowPowerful)
-                animator.SetTrigger("CriticalHit");
-            else
+            if (!theBOSS && !hasShield)
             {
-                if (playerCombat.animationCount == 0 )
-                    animator.SetTrigger("RightHit");
-                else if (playerCombat.animationCount == 2)
-                    animator.SetTrigger("LeftHit");
-                else animator.SetTrigger("Hit"); // 발차기는 머리 휘청
+                if (playerCombat.nowPowerful)
+                    animator.SetTrigger("CriticalHit");
+                else
+                {
+                    if (playerCombat.animationCount == 0)
+                        animator.SetTrigger("RightHit");
+                    else if (playerCombat.animationCount == 2)
+                        animator.SetTrigger("LeftHit");
+                    else animator.SetTrigger("Hit"); // 발차기는 머리 휘청
+                }
+
+                transform.DOMove(transform.position - (transform.forward / 2), .3f).SetDelay(.1f);
             }
-
-
-            transform.DOMove(transform.position - (transform.forward / 2), .3f).SetDelay(.1f);
-
-            StopMoving();
+            if(!playerCombat.nowPowerful)
+                StartCoroutine(HitStop());
+            if (!theBOSS)
+                StopMoving();
         }
         IEnumerator HitStop()
         {
-            yield return new WaitForSeconds(0.3f);
-            //timestop.StopTime(0.1f, 10, 0.5f);
+            //Time.timeScale = 0.1f;
+            yield return new WaitForSeconds(0.2f);
+            //Time.timeScale = 1f;
+            timestop.StopTime(0.1f, 10, 1f);
 
         }
 
@@ -146,6 +180,7 @@ public class EnemyScript : MonoBehaviour
             yield return new WaitForSeconds(.5f);
             isStunned = false;
         }
+
     }
 
     void OnPlayerCounter(EnemyScript target)
@@ -167,7 +202,7 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    void Death()
+    IEnumerator Death()
     {
         StopEnemyCoroutines();
 
@@ -175,6 +210,8 @@ public class EnemyScript : MonoBehaviour
         characterController.enabled = false;
         animator.SetTrigger("Death");
         enemyManager.SetEnemyAvailiability(this, false);
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject);
     }
 
     // 뒤로 슬금슬금 후퇴한다
@@ -275,7 +312,7 @@ public class EnemyScript : MonoBehaviour
         if(Vector3.Distance(transform.position, playerCombat.transform.position) < 1 && !playerCombat.death)
         {
             StopMoving();
-            if (!playerCombat.isCountering && !playerCombat.isAttackingEnemy)
+            if (!playerCombat.isAttackingEnemy)
                 Attack();
             else
                 PrepareAttack(false);
@@ -290,6 +327,7 @@ public class EnemyScript : MonoBehaviour
         if(ran == 1)
             animator.SetTrigger("LowKick");
         else animator.SetTrigger("Punch");
+        enemySFX.Play();
     }
 
     public void HitEvent()
@@ -306,6 +344,8 @@ public class EnemyScript : MonoBehaviour
         moveDirection = Vector3.zero;
         if(characterController.enabled)
             characterController.Move(moveDirection);
+        // 다시 움직이는 코드를 넣는다.
+        //StartCoroutine(EnemyMovement()); // 이거 넣으면 부하걸림
     }
 
     void StopEnemyCoroutines()

@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class MagicBeamScript : MonoBehaviour {
 
+    public Transform TestTarget;
+    public bool flag;
+
     [Header("Prefabs")]
     public GameObject[] beamLineRendererPrefab;
     public GameObject[] beamStartPrefab;
@@ -37,6 +40,11 @@ public class MagicBeamScript : MonoBehaviour {
             endOffSetSlider.value = beamEndOffset;
         if (scrollSpeedSlider)
             scrollSpeedSlider.value = textureScrollSpeed;
+
+        beamStart = Instantiate(beamStartPrefab[currentBeam], new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        beamEnd = Instantiate(beamEndPrefab[currentBeam], new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        beam = Instantiate(beamLineRendererPrefab[currentBeam], new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        line = beam.GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -45,25 +53,22 @@ public class MagicBeamScript : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
 
-        if (Input.GetMouseButtonDown(0))
+        if (flag)
         {
-            beamStart = Instantiate(beamStartPrefab[currentBeam], new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-            beamEnd = Instantiate(beamEndPrefab[currentBeam], new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-            beam = Instantiate(beamLineRendererPrefab[currentBeam], new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-            line = beam.GetComponent<LineRenderer>();
+            
         }
-        if (Input.GetMouseButtonUp(0))
+        if (!flag)
         {
             Destroy(beamStart);
             Destroy(beamEnd);
             Destroy(beam);
         }
 
-        if (Input.GetMouseButton(0))
+        if (flag)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //Ray ray = Camera.main.ScreenPointToRay(TestTarget.position);
             RaycastHit hit;
-            if (Physics.Raycast(ray.origin, ray.direction, out hit))
+            if (Physics.Raycast(TestTarget.position, TestTarget.position, out hit))
             {
                 Vector3 tdir = hit.point - transform.position;
                 ShootBeamInDir(transform.position, tdir);
