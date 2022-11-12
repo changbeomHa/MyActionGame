@@ -421,6 +421,7 @@ Transform:
   m_Children:
   - {fileID: 7110536388958417219}
   - {fileID: 2044205126494150446}
+  - {fileID: 8388871333413429406}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -46.89, y: 46.519, z: -72.456}
@@ -501,11 +502,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthcount: 0
   countdown: 0
-  littleEnemy: {fileID: 3298673161164594293, guid: 35beb0049dc459b4492118d4d5a64039, type: 3}
   healtSilder: {fileID: 3296365049059805610}
   PressGImg: {fileID: 0}
   BombEffect: {fileID: 7110536388958604251}
   mainCam: {fileID: 0}
+  bulletPrefab: {fileID: 7317731338516109502, guid: ec1bdabf55b0a3346aefeda9525f7d2b, type: 3}
+  bulletSpawnPos: {fileID: 8388871333413429406}
+  littleEnemy: {fileID: 3298673161164594293, guid: 35beb0049dc459b4492118d4d5a64039, type: 3}
 --- !u!136 &1460471473110458024
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -520,6 +523,36 @@ CapsuleCollider:
   m_Height: 1.483732
   m_Direction: 1
   m_Center: {x: -0.12697695, y: 0.7408411, z: 0.00000015673514}
+--- !u!1 &9018344569329876089
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8388871333413429406}
+  m_Layer: 10
+  m_Name: bulletSpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8388871333413429406
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9018344569329876089}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9, y: 0.29, z: 1.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6200384815117302344}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7110536388958498967
 PrefabInstance:
   m_ObjectHideFlags: 0

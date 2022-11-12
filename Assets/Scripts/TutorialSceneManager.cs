@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class TutorialSceneManager : MonoBehaviour
 {
-    public Animator anim;
-    public string[] dialogue;
-    public TextMeshProUGUI text;
     int i = 0;
     bool check = true;
+    public Animator anim;
+    public string[] dialogue;
+    bool playerDeath;
+    bool nowAskYou;
+
+    [Header("오브젝트")]
+    public TextMeshProUGUI text;
     public GameObject PointUI;
     public GameObject LineUI;
     public GameObject GameStart;
     public GameObject wall;
-    public DialogueManager theDM;
-    public InteractionEvent interactionEvent;
     public AudioSource BGM;
     public EnemyScript enemy;
     public GameObject NoticeUI;
@@ -25,10 +28,18 @@ public class TutorialSceneManager : MonoBehaviour
     public GameObject CinematicCameraMove;
     public GameObject PlayerCamera;
     public GameObject UpFog;
+    public GameObject AskRestart;
+    public GameObject GameOver;
+
+    [Header("스크립트")]
+    public DialogueManager theDM;
+    public InteractionEvent interactionEvent;
+    public CombatScript player;
 
     // Start is called before the first frame update
     void Start()
-    {
+    {;
+        player = FindObjectOfType<CombatScript>();
         CinematicCameraMove.SetActive(true);
         BackGroundImg.GetComponent<Image>().rectTransform.SetAsFirstSibling();
         BGM.Play();
@@ -40,7 +51,28 @@ public class TutorialSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            AskRestart.SetActive(true);
+            nowAskYou = true;
+        }
+        if (nowAskYou)
+        {
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            else if (Input.GetKeyDown(KeyCode.N)){
+                nowAskYou = false;
+                AskRestart.SetActive(false);
+            }
+        }
 
+        if (player.death && !playerDeath)
+        {
+            playerDeath = true;
+            GameOver.SetActive(true);
+        }
         if (i < 12)
         {
             //text.text = dialogue[i].ToString();

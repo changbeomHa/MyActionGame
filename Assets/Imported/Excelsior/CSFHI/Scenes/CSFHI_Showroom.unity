@@ -23,10 +23,10 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.09375, g: 0.0542533, b: 0.04756434, a: 0.25}
   m_AmbientEquatorColor: {r: 0.0285, g: 0.03125, b: 0.03325, a: 0.25}
   m_AmbientGroundColor: {r: 0.01175, g: 0.01075, b: 0.00875, a: 0.25}
-  m_AmbientIntensity: 0.5
+  m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 6cb6d85e3d430a140a7f0aa9d3c8067c, type: 2}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 2
-  m_ReflectionIntensity: 0.5
+  m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3355174, g: 0.19684285, b: 0.1289, a: 0.5}
+  m_IndirectSpecularColor: {r: 1481.7754, g: 1835.8867, b: 2430.4492, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7869,7 +7869,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 564261514}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: ExampleUI, Assembly-CSharp
         m_MethodName: DoSwitchAnimDelays
         m_Mode: 1
         m_Arguments:
@@ -10827,7 +10827,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 564261514}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: ExampleUI, Assembly-CSharp
         m_MethodName: DoSwitchAutoCam
         m_Mode: 1
         m_Arguments:
@@ -21312,7 +21312,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 564261514}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: ExampleUI, Assembly-CSharp
         m_MethodName: DoSwitchCameraEffects
         m_Mode: 1
         m_Arguments:
@@ -27032,7 +27032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.561412, y: 1}
-  m_AnchoredPosition: {x: 0.000000059604645, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0.00000011920929, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &588626405
@@ -29726,6 +29726,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 102806, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 105078, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 113596, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 116844, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119924, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 151152, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 154104, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 160798, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 177484, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 182178, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 184420, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 404654, guid: 21b379a4614f60b49a3ddbe3761a0d21, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -89.980194
@@ -41269,7 +41313,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -0.00000047683716, y: -5.7}
+  m_AnchoredPosition: {x: 0, y: -5.7}
   m_SizeDelta: {x: -30, y: 95.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!82 &1168413641
@@ -53003,7 +53047,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.0000095, y: -1.5000136}
+  m_AnchoredPosition: {x: 2.0000076, y: -1.5000153}
   m_SizeDelta: {x: 104.7, y: -16.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1393019083
@@ -65467,7 +65511,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1945544911}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: ExcelsiorUtils, Assembly-CSharp
         m_MethodName: GetSliderValue_ToText
         m_Mode: 1
         m_Arguments:

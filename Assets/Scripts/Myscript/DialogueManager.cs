@@ -14,7 +14,7 @@ public class DialogueManager : MonoBehaviour
 
     Dialogue[] dialogues;
 
-    bool isDialogue = false; // 대화중일 경우 true.
+    public bool isDialogue = false; // 대화중일 경우 true.
     bool isNext = false; // 다음 문장 까지 대기
 
     [Header("텍스트 출력 딜레이")]

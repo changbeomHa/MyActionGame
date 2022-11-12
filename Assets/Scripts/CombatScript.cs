@@ -11,7 +11,7 @@ public class CombatScript : MonoBehaviour
 {
     private ScoreManager heartbeatRate;
     private EnemyManager enemyManager;
-    private EnemyDetection enemyDetection;
+    public EnemyDetection enemyDetection;
     private MovementInput movementInput;
     private Animator animator;
     public CinemachineImpulseSource impulseSource;
@@ -60,7 +60,7 @@ public class CombatScript : MonoBehaviour
     public int animationCount = 0;
     string[] attackMotions;
 
-
+    [SerializeField] Vector3 inputDirection;
 
     void Start()
     {
@@ -77,6 +77,10 @@ public class CombatScript : MonoBehaviour
         if (Attackable) stateText.text = "활동".ToString();
         else stateText.text = "기절".ToString();
         HPSlider.value = health;
+
+        //마스터키
+        if (Input.GetKeyDown(KeyCode.M)) Attackable = true;
+
     }
 
     // 공격 키를 호출할 때 실행
@@ -85,7 +89,9 @@ public class CombatScript : MonoBehaviour
         if (isAttackingEnemy)
             return;
 
+        
         // 적 감지 시스템에 적이 감지되어있는가
+        /*
         if (enemyDetection.CurrentTarget() == null)
         {
             if (enemyManager.AliveEnemyCount() == 0)
@@ -98,11 +104,17 @@ public class CombatScript : MonoBehaviour
                 lockedTarget = enemyManager.RandomEnemy();
             }
         }
+        */
 
         // 플레이어가 이동하는 경우 이동방향을 감지하여 타겟을 결정한다.
         if (enemyDetection.InputMagnitude() > .2f)
             lockedTarget = enemyDetection.CurrentTarget();
+        /*
+        inputDirection = forward * movementInput.moveAxis.y + right * movementInput.moveAxis.x;
+        inputDirection = inputDirection.normalized;
 
+        if (inputmag)
+        */
         // 만약 타겟이 없다면 랜덤으로 적을 감지
         if(lockedTarget == null)
             lockedTarget = enemyManager.RandomEnemy();
@@ -294,13 +306,7 @@ public class CombatScript : MonoBehaviour
         }
         IEnumerator DamageCoroutine()
         {
-            if (!Attackable) // 스턴상태라면
-            {
-                // 그냥 데미지만 적용
-            }
-            else
-            {   
-                movementInput.enabled = false;
+            movementInput.enabled = false;
                 Attackable = false;
                 if (DamageNumber == 1 || DamageNumber == 6)
                     yield return new WaitForSeconds(2f);
@@ -308,7 +314,7 @@ public class CombatScript : MonoBehaviour
                 movementInput.enabled = true;
                 Attackable = true;
                 LerpCharacterAcceleration();
-            }
+            
             
         }
     }

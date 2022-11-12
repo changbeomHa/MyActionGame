@@ -21,6 +21,7 @@ public class EnemyScript : MonoBehaviour
     private float moveSpeed = 1;
     private Vector3 moveDirection;
     public bool theBOSS;
+    public bool mini_boss;
 
     [Header("상태")]
     [SerializeField] private bool isPreparingAttack;
@@ -43,6 +44,9 @@ public class EnemyScript : MonoBehaviour
     public UnityEvent<EnemyScript> OnDamage;
     public UnityEvent<EnemyScript> OnStopMoving;
     public UnityEvent<EnemyScript> OnRetreat;
+
+    float timecheck = 0;
+    float stuncheck = 0;
 
     void Start()
     {
@@ -95,6 +99,25 @@ public class EnemyScript : MonoBehaviour
         // 방향이 설정되어 있을 때만 이동한다
         if(!theBOSS)
             MoveEnemy(moveDirection);
+        if (!theBOSS && isWaiting || isRetreating)
+        {
+            timecheck += Time.deltaTime;
+            if (timecheck > 3)
+            {
+                SetAttack();
+                timecheck = 0;
+            }
+        }
+        else timecheck = 0;
+
+        if(!theBOSS && isStunned)
+        {
+            stuncheck += Time.deltaTime;
+            if(stuncheck > 2) {
+                Attack();
+                stuncheck = 0;
+            }
+        }
     }
 
 
@@ -110,7 +133,7 @@ public class EnemyScript : MonoBehaviour
             DamageCoroutine = StartCoroutine(HitCoroutine());
 
             enemyDetection.SetCurrentTarget(null);
-            isLockedTarget = false;
+            //isLockedTarget = false;
             OnDamage.Invoke(this);
 
             if (!hasShield)
@@ -211,7 +234,13 @@ public class EnemyScript : MonoBehaviour
         animator.SetTrigger("Death");
         enemyManager.SetEnemyAvailiability(this, false);
         yield return new WaitForSeconds(3f);
-        Destroy(gameObject);
+        if (mini_boss)
+        {
+            this.gameObject.SetActive(false);
+            //enemyManager.AliveEnemyCount();
+            //enemyManager.EnemySpawn();
+        }
+        else Destroy(gameObject);
     }
 
     // 뒤로 슬금슬금 후퇴한다
@@ -241,8 +270,8 @@ public class EnemyScript : MonoBehaviour
     public void SetAttack()
     {
         isWaiting = false;
-
-        PrepareAttackCoroutine = StartCoroutine(PrepAttack());
+        if(!playerCombat.death)
+            PrepareAttackCoroutine = StartCoroutine(PrepAttack());
 
         IEnumerator PrepAttack()
         {
@@ -332,7 +361,7 @@ public class EnemyScript : MonoBehaviour
 
     public void HitEvent()
     {
-        if(!playerCombat.isCountering && !playerCombat.isAttackingEnemy)
+        //if(!playerCombat.isCountering && !playerCombat.isAttackingEnemy)
             playerCombat.DamageEvent();
 
         PrepareAttack(false);

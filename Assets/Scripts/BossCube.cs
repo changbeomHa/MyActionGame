@@ -8,12 +8,16 @@ public class BossCube : MonoBehaviour
 {
     public float healthcount;
     public float countdown = 0;
-    public GameObject littleEnemy;
     public Slider healtSilder;
     public GameObject PressGImg;
     public GameObject BombEffect;
     bool playerOn = false;
     public Camera mainCam;
+    [SerializeField] GameObject bulletPrefab;
+    public Transform bulletSpawnPos;
+    public GameObject littleEnemy;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,8 +54,14 @@ public class BossCube : MonoBehaviour
     {
         BombEffect.SetActive(true);
         transform.DOScale(0, 0);
+        yield return new WaitForSeconds(.1f);
+        //Instantiate(bulletPrefab, bulletSpawnPos.position, Quaternion.Euler(new Vector3(0, 180, 0)));
         yield return new WaitForSeconds(1f);
-        Instantiate(littleEnemy, transform.position, transform.rotation);
+        Transform Parent = GameObject.Find("EnemyManager").GetComponent<Transform>();
+        GameObject child;
+        child = Instantiate(littleEnemy, transform.position, transform.rotation) as GameObject;
+        child.transform.parent = Parent;
+        GameObject.Find("Manager").GetComponent<BossStageManager>().EnemySpawn = true;
         Destroy(gameObject);
     }
 

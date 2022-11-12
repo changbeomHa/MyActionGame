@@ -1,5 +1,5 @@
 {
-    "name": "JammoActions",
+    "name": "PlayerAction",
     "maps": [
         {
             "name": "Player",
@@ -33,14 +33,6 @@
                     "name": "Counter",
                     "type": "Button",
                     "id": "57084e2a-2b2c-412d-84b9-50fb21137a09",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Restart",
-                    "type": "Button",
-                    "id": "0dfbb13c-4ad5-4390-b387-2ba88a6ea94f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -286,28 +278,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Counter",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d6684fa9-b138-4ca2-9fa6-8ebd054c84d8",
-                    "path": "<Gamepad>/select",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Restart",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c0422166-4d2f-4ed9-8787-ddc2ac9d57d0",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Restart",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

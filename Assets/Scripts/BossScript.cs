@@ -13,8 +13,12 @@ public class BossScript : MonoBehaviour
     public CombatScript playerCombat;
     public EnemyScript enemyScript;
     public Slider BossHPSlider;
+    public BossStageManager stageManager;
+    public EnemyManager theEM;
 
     public ParticleSystem wave;
+
+    public AudioSource[] SFX;
 
     [Header("패턴1 오브젝트")]
     public Transform blockPosition1;
@@ -22,6 +26,7 @@ public class BossScript : MonoBehaviour
     public Transform blockPosition3;
     public Transform blockPosition4;
     public GameObject block;
+    public GameObject Fakeblock;
     public GameObject punchLineParticle1;
     public GameObject punchLineParticle2;
     public GameObject punchLineParticle3;
@@ -97,8 +102,14 @@ public class BossScript : MonoBehaviour
     IEnumerator Pattern()
     {
         yield return new WaitForSeconds(0.1f);
-        int randomPattern = 0;
-        //int randomPattern = Random.Range(0,4);
+        //int randomPattern = 0;
+        int randomPattern;
+
+        if(theEM.aliveEnemyCount > 1)
+        {
+            randomPattern = Random.Range(1, 4);
+        }
+        else randomPattern = Random.Range(0, 4);
         Debug.Log(randomPattern);
 
         switch (randomPattern)
@@ -121,8 +132,9 @@ public class BossScript : MonoBehaviour
 
     IEnumerator BossPunch()
     {
-        animator.SetTrigger("BossPunch");
+        animator.SetTrigger("BossPunch");       
         yield return new WaitForSeconds(2.2f);
+        SFX[0].Play();
         impulseSource.GenerateImpulse();
         punchLineParticle1.transform.LookAt(blockPosition1);
         punchLineParticle1.GetComponent<ParticleSystem>().Play();
@@ -135,9 +147,9 @@ public class BossScript : MonoBehaviour
 
         yield return new WaitForSeconds(.3f);      
         Instantiate(block, blockPosition1);
-        Instantiate(block, blockPosition2);
-        Instantiate(block, blockPosition3);
-        Instantiate(block, blockPosition4);
+        Instantiate(Fakeblock, blockPosition2);
+        Instantiate(Fakeblock, blockPosition3);
+        Instantiate(Fakeblock, blockPosition4);
         yield return new WaitForSeconds(6f);
         StartCoroutine(Pattern());
     }
@@ -193,6 +205,7 @@ public class BossScript : MonoBehaviour
         BossLandPosition.transform.DOScale(new Vector3(0f, 0f, 0f), 0.1f);
         BossLandPosition.SetActive(false);
         BossLandingRange.SetActive(true);
+        SFX[1].Play();
         wave.Play();
         impulseSource.GenerateImpulse();
         yield return new WaitForSeconds(.2f);
@@ -206,6 +219,7 @@ public class BossScript : MonoBehaviour
         beamDamage = 0;
         transform.LookAt(playerCombat.transform);
         animator.SetTrigger("Beam");
+        //SFX[2].Play();
         BeamCharging.SetActive(true);
         yield return new WaitForSeconds(2f);
         BeamCharging.SetActive(false);

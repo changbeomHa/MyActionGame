@@ -14,6 +14,26 @@ public class EnemyManager : MonoBehaviour
     public int aliveEnemyCount;
     void Start()
     {
+        EnemySpawn();
+    }
+
+    public void Update()
+    {
+        /*
+        for (int i = 0; i < allEnemies.Length; i++)
+        {
+            if(allEnemies[i].enemyScript = null)
+            {
+                Remove allEnemies[i]
+            }
+
+           
+        }
+        */
+    }
+
+    public void EnemySpawn()
+    {
         enemies = GetComponentsInChildren<EnemyScript>();
 
         allEnemies = new EnemyStruct[enemies.Length];
