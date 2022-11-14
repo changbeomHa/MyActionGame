@@ -6,6 +6,8 @@
 
 [![Video Label](https://img.youtube.com/vi/kNbZ1Jq-2Ss/0.jpg)](https://youtu.be/kNbZ1Jq-2Ss)
 
+시작 부분에서는 기술을, 1분46초 부터 게임을 소개합니다.
+<br/>
 
 
 ### 스토리
