@@ -4,7 +4,7 @@
 * 이 레포지토리에는 게임에 대한 파일만 존재합니다. Motion Puzzle & PFNN에 대한 파일은 다른 레포지토리를 참고합니다.
 
 
-<iframe width="956" height="538" src="[https://youtu.be/kNbZ1Jq-2Ss](https://youtu.be/kNbZ1Jq-2Ss)" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="1268" height="713" src="https://www.youtube.com/embed/kNbZ1Jq-2Ss" title="Runtime Motion Style Transfer 기반의 액션 게임 개발" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 
