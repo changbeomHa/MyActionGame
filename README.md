@@ -4,6 +4,9 @@
 * 이 레포지토리에는 게임에 대한 파일만 존재합니다. Motion Puzzle & PFNN에 대한 파일은 다른 레포지토리를 참고합니다.
 
 
+<iframe width="956" height="538" src="https://youtu.be/kNbZ1Jq-2Ss" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 
 ### 스토리
 어디에나 존재하는 <프로토타입 봇>, 신작 게임의 메인 캐릭터 선발 시험에 지원하다.
