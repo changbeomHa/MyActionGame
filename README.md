@@ -58,6 +58,6 @@
 
 ###  포스터
 <p alitn="center">
-<img src="https://user-images.githubusercontent.com/30552933/202707386-5ea85723-2c0e-47fb-a915-448f7f28c815.png">
-<img src="https://user-images.githubusercontent.com/30552933/202705372-a1fa2d1e-502c-4731-904c-642cec5d2f57.png">
+<img src="https://user-images.githubusercontent.com/30552933/202707386-5ea85723-2c0e-47fb-a915-448f7f28c815.png" width="510">
+<img src="https://user-images.githubusercontent.com/30552933/202705372-a1fa2d1e-502c-4731-904c-642cec5d2f57.png" width="500">
 </p>
