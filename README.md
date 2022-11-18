@@ -57,6 +57,7 @@
 
 
 ###  포스터
+<p alitn="center">
 <img src="https://user-images.githubusercontent.com/30552933/202705365-23ded63b-d1b4-4035-9a1e-931b185150ab.png" width="500">
 <img src="https://user-images.githubusercontent.com/30552933/202705372-a1fa2d1e-502c-4731-904c-642cec5d2f57.png" width="500">
-
+</p>
