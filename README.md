@@ -54,3 +54,8 @@
 심박수를 낮게 유지하면 집중상태에서 치명타 공격을 가할 수 있다.
 2. 방어막 시스템 : 모든 적은 방어막을 갖는다. 방어막은 치명타 공격으로만 파괴할 수 있다.
 3. 조작 : WASD 움직임, shift 대쉬, 마우스 좌클릭 공격, 스페이스바 심박수, R 다시하기
+
+
+###  포스터
+![그림1](https://user-images.githubusercontent.com/30552933/202705365-23ded63b-d1b4-4035-9a1e-931b185150ab.png)
+![그림2](https://user-images.githubusercontent.com/30552933/202705372-a1fa2d1e-502c-4731-904c-642cec5d2f57.png)
