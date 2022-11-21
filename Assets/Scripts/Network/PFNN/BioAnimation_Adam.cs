@@ -48,6 +48,7 @@ namespace SIGGRAPH_2018 {
 		private const int RootPointIndex = 60;
 		private const int PointDensity = 10;
 
+		private Socket socket;
 		void Reset() {
 			Controller = new Controller();
 		}
@@ -168,6 +169,35 @@ namespace SIGGRAPH_2018 {
 			}
 		}
 
+		private String Stylied(Vector3 pos, Vector3 forward, Vector3 up, Vector3 vel)
+        {
+			string temp = "";
+			temp += string.Format("{0:0.######}", pos.x) + ",";
+			temp += string.Format("{0:0.######}", pos.y) + ",";
+			temp += string.Format("{0:0.######}", pos.z) + ",";
+			temp += string.Format("{0:0.######}", forward.x) + ",";
+			temp += string.Format("{0:0.######}", forward.y) + ",";
+			temp += string.Format("{0:0.######}", forward.z) + ",";
+			temp += string.Format("{0:0.######}", up.x) + ",";
+			temp += string.Format("{0:0.######}", up.y) + ",";
+			temp += string.Format("{0:0.######}", up.z) + ",";
+			temp += string.Format("{0:0.######}", vel.x) + ",";
+			temp += string.Format("{0:0.######}", vel.y) + ",";
+			temp += string.Format("{0:0.######}", vel.z) + ",";
+			/*			temp += pos.x.ToString() + ",";
+						temp += pos.y.ToString() + ",";
+						temp += pos.z.ToString() + ",";
+						temp += forward.x.ToString() + ",";
+						temp += forward.y.ToString() + ",";
+						temp += forward.z.ToString() + ",";
+						temp += up.x.ToString() + ",";
+						temp += up.y.ToString() + ",";
+						temp += up.z.ToString() + ",";
+						temp += vel.x.ToString() + ",";
+						temp += vel.y.ToString() + ",";
+						temp += vel.z.ToString();*/
+			return temp;
+		}
 		private void Animate() {
 			//Calculate Root
 			Matrix4x4 currentRoot = Trajectory.Points[RootPointIndex].GetTransformation();
@@ -187,7 +217,7 @@ namespace SIGGRAPH_2018 {
 				NN.SetInput(start + i*TrajectoryDimIn + 4, vel.x);
 				NN.SetInput(start + i*TrajectoryDimIn + 5, vel.z);
 				NN.SetInput(start + i*TrajectoryDimIn + 6, speed);
-				for(int j=0; j<Controller.Styles.Length; j++) {
+				for (int j=0; j<Controller.Styles.Length; j++) {
 					NN.SetInput(start + i*TrajectoryDimIn + (TrajectoryDimIn - Controller.Styles.Length) + j, GetSample(i).Styles[j]);
 				}
 			}
@@ -196,8 +226,18 @@ namespace SIGGRAPH_2018 {
 			Matrix4x4 previousRoot = Trajectory.Points[RootPointIndex-1].GetTransformation();
 			// previousRoot[1,3] = 0f; //For flat terrain
 
+			// animation interporation 
+			if (ControlManager.isBasicControl)
+			{
+				for (int i = 0; i < Actor.Bones.Length; i++)
+				{
+					Positions[i] = Actor.Bones[i].Transform.position;
+					Forwards[i] = Actor.Bones[i].Transform.forward.normalized;
+					Ups[i] = Actor.Bones[i].Transform.up.normalized;
+				}
+			}
 			//Input Previous Bone Positions / Velocities
-			for(int i=0; i<Actor.Bones.Length; i++) {
+			for (int i=0; i<Actor.Bones.Length; i++) {
 				Vector3 pos = Positions[i].GetRelativePositionTo(previousRoot);
 				Vector3 forward = Forwards[i].GetRelativeDirectionTo(previousRoot);
 				Vector3 up = Ups[i].GetRelativeDirectionTo(previousRoot);
@@ -249,6 +289,11 @@ namespace SIGGRAPH_2018 {
 			Trajectory.Points[RootPointIndex].SetVelocity(translationalOffset.GetRelativeDirectionFrom(currentRoot) * Framerate);
 			Trajectory.Points[RootPointIndex].Postprocess(); // post process for foot ik with ground
 			Matrix4x4 nextRoot = Trajectory.Points[RootPointIndex].GetTransformation();
+            if (ControlManager.isAttack)
+            {
+				Trajectory.Points[RootPointIndex].SetVelocity(new Vector3(0, 0, 0));
+			}
+
 			// nextRoot[1,3] = 0f; //For flat terrain
 
 			//Update Future Trajectory
@@ -258,6 +303,10 @@ namespace SIGGRAPH_2018 {
 				Trajectory.Points[i].SetVelocity(Trajectory.Points[i].GetVelocity() + translationalOffset.GetRelativeDirectionFrom(nextRoot) * Framerate);
 			}
 
+			if (ControlManager.isAttack)
+			{
+				return;
+			}
 			// post process for foot ik with ground
 			for (int i = RootPointIndex; i < Trajectory.Points.Length; i += PointDensity)
 			{
@@ -346,13 +395,13 @@ namespace SIGGRAPH_2018 {
 				Forwards[i] = forward;
 				Ups[i] = up;
 				Velocities[i] = velocity;
-			}
+            }
 			start += JointDimOut*Actor.Bones.Length;
 
 			// Basic Control working
             if (ControlManager.isBasicControl)
-            {
-                if (ControlManager.isDash)
+			{
+				if (ControlManager.isDash)
                 {
 					Framerate = 15;
                 }
@@ -360,11 +409,42 @@ namespace SIGGRAPH_2018 {
             }
 			Framerate = 30;
 
+			// Record joint information
+			string socket_input = "";
+			List<int> skeletons = new List<int>(new int[] {0, 18, 19, 20, 21, 23, 24, 25, 26,
+														   2, 4, 5, 6, 8, 9, 10, 11, 13, 14, 15, 16});
+			foreach (int i in skeletons)
+			{
+				socket_input += Stylied(Positions[i] - Trajectory.Points[RootPointIndex].GetPosition(), Forwards[i], Ups[i], Velocities[i]) + "|";
+			}
+			ControlManager.jointInput = socket_input;
+
+			if(ControlManager.jointOutput != "")
+            {
+				string[] output = ControlManager.jointOutput.Split(',');
+				for(int i = 0; i < 21; i++)
+				{
+					Vector3 position = new Vector3(float.Parse(output[i * 12 + 0]), float.Parse(output[i * 12 + 1]), float.Parse(output[i * 12 + 2])).GetRelativePositionFrom(currentRoot);
+					Vector3 forward = new Vector3(float.Parse(output[i * 12 + 3]), float.Parse(output[i * 12 + 4]), float.Parse(output[i * 12 + 5])).normalized.GetRelativeDirectionFrom(currentRoot);
+					Vector3 up = new Vector3(float.Parse(output[i * 12 + 6]), float.Parse(output[i * 12 + 7]), float.Parse(output[i * 12 + 8])).normalized.GetRelativeDirectionFrom(currentRoot);
+					Vector3 velocity = new Vector3(float.Parse(output[i * 12 + 9]), float.Parse(output[i * 12 + 10]), float.Parse(output[i * 12 + 11])).GetRelativeDirectionFrom(currentRoot);
+
+					print(new Vector3(1, 1, 1));
+					print(new Vector3(1, 1, 1).GetRelativePositionFrom(currentRoot));
+
+					Positions[skeletons[i]] = Vector3.Lerp(Positions[i] + velocity / Framerate, position, 0.5f);
+					Forwards[skeletons[i]] = forward;
+					Ups[skeletons[i]] = up;
+					Velocities[skeletons[i]] = velocity;
+				}
+				ControlManager.jointOutput = "";
+			}
+
 			//Assign Posture
 			transform.position = nextRoot.GetPosition();
 			transform.rotation = nextRoot.GetRotation();
 
-			for(int i=0; i<Actor.Bones.Length; i++) {
+			for (int i=0; i<Actor.Bones.Length; i++) {
 				Actor.Bones[i].Transform.position = Positions[i];
 				Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);
 
@@ -411,7 +491,10 @@ namespace SIGGRAPH_2018 {
 				// right toe add rotation
 				if (i >= 26 && i <= 27)
 					Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
+
 			}
+
+
 		}
 
 		private Vector3 RotationByCamera()

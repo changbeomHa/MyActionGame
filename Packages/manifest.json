@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.barracuda": "https://github.com/Unity-Technologies/barracuda-release.git",
     "com.unity.cinemachine": "2.7.8",
     "com.unity.collab-proxy": "1.9.0",
     "com.unity.ext.nunit": "1.0.6",

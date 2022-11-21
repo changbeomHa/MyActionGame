@@ -12,6 +12,8 @@ public class ControlManager : MonoBehaviour
     public static bool isAttack;
     public static bool isBasicControl;
     public static Vector3 targetVector;
+    public static string jointInput = "";
+    public static string jointOutput = "";
 
     // Start is called before the first frame update
     void Start()
