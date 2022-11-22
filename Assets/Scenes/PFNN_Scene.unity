@@ -1791,7 +1791,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482416877}
-  m_LocalRotation: {x: -0.004889146, y: -0.03210611, z: 0.009988704, w: 0.9994226}
+  m_LocalRotation: {x: -0.004889146, y: -0.032106142, z: 0.009988715, w: 0.9994226}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2655,7 +2655,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898027572}
-  m_LocalRotation: {x: 0.013290659, y: -0.031919107, z: 0.010571045, w: 0.99934626}
+  m_LocalRotation: {x: 0.013290659, y: -0.031919144, z: 0.010571057, w: 0.99934626}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3147,7 +3147,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 973188121}
-  m_LocalRotation: {x: 0.14669043, y: -0.022890784, z: 0.003395507, w: 0.98891175}
+  m_LocalRotation: {x: 0.14669043, y: -0.022890816, z: 0.0033955127, w: 0.98891175}
   m_LocalPosition: {x: 0.32567498, y: 3.443657, z: -7.031019}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4701,7 +4701,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1347024028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7466,7 +7466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Folder: Assets\Scripts\Network\PFNN\DeepLearning\Parameters\trained_Adam
   Destination: Assets\Scripts\Network\PFNN\DeepLearning\Parameters
-  Parameters: {fileID: 11400000, guid: 76c143bce862773498f9b72dc0284bc8, type: 2}
+  Parameters: {fileID: 11400000, guid: e0f81eea6adc6484dac26efd0ae8e94d, type: 2}
   XDim: 468
   HDim: 512
   YDim: 376
@@ -7939,6 +7939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f62d972c8e4c74c9e9e287f3485ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  temp: {fileID: 2082703681}
 --- !u!1 &1994009316 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 50e3eaef949e4b541afdfbbe8852d782, type: 3}
@@ -8582,7 +8583,7 @@ Transform:
   m_GameObject: {fileID: 2082703681}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10

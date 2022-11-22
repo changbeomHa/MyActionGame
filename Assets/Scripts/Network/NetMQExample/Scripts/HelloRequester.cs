@@ -21,7 +21,7 @@ public class HelloRequester : RunAbleThread
         {
             client.Connect("tcp://localhost:5555");
 
-            for (int i = 0; i < 1000 && Running; i++)
+            for (int i = 0; i < 10000 && Running; i++)
             {
                 // Debug.Log("Sending Hello");
                 client.SendFrame(ControlManager.jointInput);
