@@ -110,7 +110,7 @@ public class EnemyScript : MonoBehaviour
         }
         else timecheck = 0;
 
-        if(!theBOSS && isStunned)
+        if(!theBOSS && isStunned && Vector3.Distance(transform.position, playerCombat.transform.position) < 2 && !playerCombat.death)
         {
             stuncheck += Time.deltaTime;
             if(stuncheck > 2) {
@@ -152,12 +152,23 @@ public class EnemyScript : MonoBehaviour
                     health--;
                 }
             }
-
-            if(health % 5 == 0 && health != 0)
+            if (!theBOSS)
             {
-                hasShield = true;
-                shield.SetActive(true);
+                if (health % 5 == 0 && health != 0)
+                {
+                    hasShield = true;
+                    shield.SetActive(true);
+                }
             }
+            else if (theBOSS)
+            {
+                if (health % 8 == 0 && health != 0)
+                {
+                    hasShield = true;
+                    shield.SetActive(true);
+                }
+            }
+
 
             if (health <= 0)
             {
@@ -234,13 +245,13 @@ public class EnemyScript : MonoBehaviour
         animator.SetTrigger("Death");
         enemyManager.SetEnemyAvailiability(this, false);
         yield return new WaitForSeconds(3f);
-        if (mini_boss)
-        {
+        //if (mini_boss)
+        //{
             this.gameObject.SetActive(false);
             //enemyManager.AliveEnemyCount();
             //enemyManager.EnemySpawn();
-        }
-        else Destroy(gameObject);
+        //}
+        //else Destroy(gameObject);
     }
 
     // 뒤로 슬금슬금 후퇴한다

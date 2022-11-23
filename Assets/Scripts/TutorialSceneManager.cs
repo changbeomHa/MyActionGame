@@ -21,7 +21,6 @@ public class TutorialSceneManager : MonoBehaviour
     public GameObject GameStart;
     public GameObject wall;
     public AudioSource BGM;
-    public EnemyScript enemy;
     public GameObject NoticeUI;
     public TextMeshProUGUI noticeText;
     public GameObject BackGroundImg;
@@ -30,8 +29,11 @@ public class TutorialSceneManager : MonoBehaviour
     public GameObject UpFog;
     public GameObject AskRestart;
     public GameObject GameOver;
+    public GameObject GameClear;
+    public GameObject GameClearText;
 
     [Header("스크립트")]
+    public EnemyScript enemy;
     public DialogueManager theDM;
     public InteractionEvent interactionEvent;
     public CombatScript player;
@@ -107,6 +109,11 @@ public class TutorialSceneManager : MonoBehaviour
         {
             NoticeUI.SetActive(false);
         }
+
+        if(enemy.health <= 0)
+        {
+            StartCoroutine(GameClearCoroutine());
+        }
     }
 
     IEnumerator Fade()
@@ -148,5 +155,15 @@ public class TutorialSceneManager : MonoBehaviour
             //enemy.hasShield = value;
         }
 
+    }
+
+    IEnumerator GameClearCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        GameClear.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        GameClearText.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene("TrainingRoom");
     }
 }

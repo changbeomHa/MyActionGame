@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -17,12 +18,11 @@ public class MainMenuManager : MonoBehaviour
     }
     IEnumerator FadeObjDown()
     {
-        FadeImg.CrossFadeAlpha(0f, 2f, false);
-        yield return new WaitForSeconds(2f);
-        FadeImg.CrossFadeAlpha(1f, 2f, false);
+        FadeImg.CrossFadeAlpha(0f, 1.5f, false);
+        yield return new WaitForSeconds(2.5f);
+        FadeImg.CrossFadeAlpha(1f, 1.5f, false);
         yield return new WaitForSeconds(3f);
-        FadeObj.SetActive(false);
-        LogoFadeObj.SetActive(false);
+        SceneManager.LoadScene("Intro");
     }
 
 }

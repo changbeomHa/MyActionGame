@@ -81,6 +81,13 @@ public class CombatScript : MonoBehaviour
         //마스터키
         if (Input.GetKeyDown(KeyCode.M)) Attackable = true;
 
+        if (health <= 0 && !death)
+        {
+            death = true;
+            Death();
+            return;
+        }
+
     }
 
     // 공격 키를 호출할 때 실행
@@ -297,23 +304,24 @@ public class CombatScript : MonoBehaviour
             damageCoroutine = StartCoroutine(DamageCoroutine());
             health--;
         }
-
+        /*
         if (health <= 0)
         {
             death = true;
             Death();
             return;
         }
+        */
         IEnumerator DamageCoroutine()
         {
             movementInput.enabled = false;
-                Attackable = false;
-                if (DamageNumber == 1 || DamageNumber == 6)
-                    yield return new WaitForSeconds(2f);
-                else yield return new WaitForSeconds(.5f);
-                movementInput.enabled = true;
-                Attackable = true;
-                LerpCharacterAcceleration();
+            Attackable = false;
+            if (DamageNumber == 1 || DamageNumber == 6)
+                yield return new WaitForSeconds(2.5f);
+            else yield return new WaitForSeconds(.9f);
+            movementInput.enabled = true;
+            Attackable = true;
+            LerpCharacterAcceleration();
             
             
         }

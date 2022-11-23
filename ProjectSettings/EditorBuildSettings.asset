@@ -9,13 +9,19 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 3db1837cc97a95e4c98610966fac2b0b
   - enabled: 1
+    path: Assets/Scenes/LogoScene.unity
+    guid: 8031b91e523e2ff4babb59d70fda247e
+  - enabled: 1
     path: Assets/Scenes/Intro.unity
     guid: dc840b56d1111964f96c7ab8be469680
   - enabled: 1
     path: Assets/Scenes/TutorialRoom.unity
     guid: d154e942646eae44d87d13af732c4b26
   - enabled: 1
-    path: Assets/Scenes/MasterRoom 1.unity
+    path: Assets/Scenes/TrainingRoom.unity
+    guid: 88e76d25f3a4fa74ab1629ab1d0d99d7
+  - enabled: 1
+    path: Assets/Scenes/BossRoomEnter.unity
     guid: 7d9724822c63ccc4dab03aafd6a4a6f3
   - enabled: 1
     path: Assets/Scenes/MasterRoom.unity
