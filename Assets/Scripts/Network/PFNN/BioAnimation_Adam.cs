@@ -51,6 +51,16 @@ namespace SIGGRAPH_2018
         private const int PointDensity = 10;
 
         private Socket socket;
+
+        private string socket_input = "";
+        private List<int> skeletons = new List<int>(new int[] {
+                                                                0,
+                                                                18, 19, 20, 21,
+                                                                23, 24, 25, 26,
+                                                                2, 4, 5, 6,
+                                                                8, 9, 10, 11,
+                                                                13, 14, 15, 16
+                                                            });
         void Reset()
         {
             Controller = new Controller();
@@ -213,6 +223,7 @@ namespace SIGGRAPH_2018
                      temp += vel.z.ToString();*/
             return temp;
         }
+
         private void Animate()
         {
             //Calculate Root
@@ -325,10 +336,84 @@ namespace SIGGRAPH_2018
                 Trajectory.Points[i].SetVelocity(Trajectory.Points[i].GetVelocity() + translationalOffset.GetRelativeDirectionFrom(nextRoot) * Framerate);
             }
 
-            if (ControlManager.isAttack)
+            if (ControlManager.isBasicControl)
             {
+                start = TrajectoryDimOut * 6;
+
+                // Record joint information
+
+                foreach (int i in skeletons)
+                {
+                    Vector3 position = Actor.Bones[i].Transform.position;
+                    Vector3 forward = Actor.Bones[i].Transform.rotation.GetForward();
+                    Vector3 up = Actor.Bones[i].Transform.rotation.GetUp();
+                    Vector3 velocity = new Vector3(0, 0, 0);
+
+                    socket_input += Stylied(position, forward, up, velocity) + "|";
+                }
+
+                start += JointDimOut * Actor.Bones.Length;
+                ControlManager.jointInput = ControlManager.currentStyleIndex + "|" + socket_input;
+                socket_input = "";
+
+                if (ControlManager.jointOutput != "")
+                {
+                    string[] output = ControlManager.jointOutput.Split(',');
+                    for (int i = 0; i < 21; i++)
+                    {
+                        float scale = 7f;
+                        Vector3 position = new Vector3(float.Parse(output[i * JointDimOut + 0]) / scale * 1.5f, float.Parse(output[i * JointDimOut + 1]) / scale, float.Parse(output[i * JointDimOut + 2]) / scale).GetRelativePositionFrom(currentRoot);
+                        Vector3 forward = new Vector3(float.Parse(output[i * JointDimOut + 3]), float.Parse(output[i * JointDimOut + 4]), float.Parse(output[i * JointDimOut + 5])).normalized.GetRelativeDirectionFrom(currentRoot);
+                        Vector3 up = new Vector3(float.Parse(output[i * JointDimOut + 6]), float.Parse(output[i * JointDimOut + 7]), float.Parse(output[i * JointDimOut + 8])).normalized.GetRelativeDirectionFrom(currentRoot);
+                        Vector3 velocity = new Vector3(float.Parse(output[i * JointDimOut + 9]), float.Parse(output[i * JointDimOut + 10]), float.Parse(output[i * JointDimOut + 11])).GetRelativeDirectionFrom(currentRoot);
+
+                        Actor.Bones[skeletons[i]].Transform.position = Vector3.Lerp(Positions[skeletons[i]] + velocity / Framerate, position, 0.5f);
+                        Actor.Bones[skeletons[i]].Transform.rotation = Quaternion.LookRotation(forward, up);
+
+                        // left arm add rotation
+                        if (skeletons[i] >= 9 && skeletons[i] <= 12)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
+
+                        // left hand add rotation
+                        if (skeletons[i] >= 11 && skeletons[i] <= 12)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 180, 0));
+
+                        // right arm add rotation
+                        if (skeletons[i] >= 14 && skeletons[i] <= 17)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-135, 0, -90));
+
+                        // right hand add rotation
+                        if (skeletons[i] >= 14 && skeletons[i] <= 17)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -180, 0));
+
+                        // left leg add rotation
+                        if (skeletons[i] >= 18 && skeletons[i] <= 20)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(180, 180, 0));
+
+                        // left foot add rotation
+                        if (skeletons[i] >= 20 && skeletons[i] <= 20)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(135, 135, 135));
+
+                        // left toe add rotation
+                        if (skeletons[i] >= 21 && skeletons[i] <= 22)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, -45, -130));
+
+                        // right leg add rotation
+                        if (skeletons[i] >= 23 && skeletons[i] <= 25)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-180, -180, 0));
+
+                        // right foot add rotation
+                        if (skeletons[i] >= 25 && skeletons[i] <= 25)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(50, 0, 0));
+
+                        // right toe add rotation
+                        if (skeletons[i] >= 26 && skeletons[i] <= 27)
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
+                    }
+                }
                 return;
             }
+
             // post process for foot ik with ground
             for (int i = RootPointIndex; i < Trajectory.Points.Length; i += PointDensity)
             {
@@ -483,17 +568,6 @@ namespace SIGGRAPH_2018
 
             }
 
-            // Record joint information
-            string socket_input = "";
-            List<int> skeletons = new List<int>(new int[] {
-                0, 
-                18, 19, 20, 21, 
-                23, 24, 25, 26,
-                2, 4, 5, 6, 
-                8, 9, 10, 11, 
-                13, 14, 15, 16
-            });
-
             foreach (int i in skeletons)
             {
                 Vector3 position = new Vector3(NN.GetOutput(start + i * JointDimOut + 0), NN.GetOutput(start + i * JointDimOut + 1), NN.GetOutput(start + i * JointDimOut + 2));
@@ -506,14 +580,15 @@ namespace SIGGRAPH_2018
 
             start += JointDimOut * Actor.Bones.Length;
             ControlManager.jointInput = ControlManager.currentStyleIndex + "|" + socket_input;
+            socket_input = "";
 
             if (ControlManager.jointOutput != "")
             {
                 string[] output = ControlManager.jointOutput.Split(',');
                 for (int i = 0; i < 21; i++)
                 {
-                    float scale = 2f;
-                    Vector3 position = new Vector3(float.Parse(output[i * JointDimOut + 0]) / scale, float.Parse(output[i * JointDimOut + 1]) / scale, float.Parse(output[i * JointDimOut + 2]) / scale).GetRelativePositionFrom(currentRoot);
+                    float scale = 7f;
+                    Vector3 position = new Vector3(float.Parse(output[i * JointDimOut + 0]) / scale * 1.5f, float.Parse(output[i * JointDimOut + 1]) / scale, float.Parse(output[i * JointDimOut + 2]) / scale).GetRelativePositionFrom(currentRoot);
                     Vector3 forward = new Vector3(float.Parse(output[i * JointDimOut + 3]), float.Parse(output[i * JointDimOut + 4]), float.Parse(output[i * JointDimOut + 5])).normalized.GetRelativeDirectionFrom(currentRoot);
                     Vector3 up = new Vector3(float.Parse(output[i * JointDimOut + 6]), float.Parse(output[i * JointDimOut + 7]), float.Parse(output[i * JointDimOut + 8])).normalized.GetRelativeDirectionFrom(currentRoot);
                     Vector3 velocity = new Vector3(float.Parse(output[i * JointDimOut + 9]), float.Parse(output[i * JointDimOut + 10]), float.Parse(output[i * JointDimOut + 11])).GetRelativeDirectionFrom(currentRoot);
@@ -523,11 +598,11 @@ namespace SIGGRAPH_2018
 
                     // left arm add rotation
                     if (skeletons[i] >= 9 && skeletons[i] <= 12)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, 75));
 
                     // left hand add rotation
                     if (skeletons[i] >= 11 && skeletons[i] <= 12)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 180, 0));
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(ControlManager.tempVector);
 
                     // right arm add rotation
                     if (skeletons[i] >= 14 && skeletons[i] <= 17)

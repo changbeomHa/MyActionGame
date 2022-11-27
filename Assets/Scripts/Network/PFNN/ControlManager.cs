@@ -8,7 +8,8 @@ public class ControlManager : MonoBehaviour
     private MovementInput movementInput;
     private Animator anim;
 
-    public GameObject temp;
+    public temp temp;
+    public static Vector3 tempVector;
 
     public int styleIndex;
 
@@ -26,12 +27,40 @@ public class ControlManager : MonoBehaviour
         anim = this.GetComponent<Animator>();
         combatScript = this.GetComponent<CombatScript>();
         movementInput = this.GetComponent<MovementInput>();
-        Instantiate(temp);
     }
 
+    void InputStyle()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            styleIndex = 0;
+            print("style motion: strutting_normal_walking_000.bvh");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            styleIndex = 1;
+            print("style motion: old_normal_walking_000.bvh");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            styleIndex = 2;
+            print("style motion: proud_normal_walking_000.bvh");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            styleIndex = 3;
+            print("style motion: childlike_normal_walking_000.bvh");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            styleIndex = 4;
+            print("style motion: depressed_normal_walking_000.bvh");
+        }
+    }
     // Update is called once per frame
     void Update()
     {
+        InputStyle();
         currentStyleIndex = styleIndex.ToString();
 
         if (movementInput.isPFNN)
@@ -41,5 +70,7 @@ public class ControlManager : MonoBehaviour
             isBasicControl = isDash || isAttack;
             anim.enabled = isBasicControl;
         }
+
+        tempVector = new Vector3(temp.a, temp.b, temp.c);
     }
 }
