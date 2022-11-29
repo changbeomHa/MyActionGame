@@ -53,6 +53,14 @@ namespace SIGGRAPH_2018
         private Socket socket;
 
         private string socket_input = "";
+        private List<int> parents = new List<int>(new int[] {
+                                                                0,
+                                                                0, 1, 2, 3 , 4, 5, 6,
+                                                                4, 8, 9, 10, 11,
+                                                                4, 13, 14, 15, 16,
+                                                                0, 18, 19, 20, 21,
+                                                                0, 23, 24, 25, 26
+                                                            });
         private List<int> skeletons = new List<int>(new int[] {
                                                                 0,
                                                                 18, 19, 20, 21,
@@ -61,6 +69,10 @@ namespace SIGGRAPH_2018
                                                                 8, 9, 10, 11,
                                                                 13, 14, 15, 16
                                                             });
+        private List<float> distances = new List<float>(new float[28]);
+        private List<Vector3> UpVector = new List<Vector3>(new Vector3[28]);
+        private List<Vector3> ForwardVector = new List<Vector3>(new Vector3[28]);
+
         void Reset()
         {
             Controller = new Controller();
@@ -78,6 +90,21 @@ namespace SIGGRAPH_2018
             Velocities = new Vector3[Actor.Bones.Length];
             Trajectory = new Trajectory(Points, Controller.GetNames(), transform.position, TargetDirection);
             Trajectory.Postprocess(); // post process for foot ik with ground
+
+            for (int i = 0; i < Actor.Bones.Length; i++)
+            {
+                if (i == 0)
+                {
+                    distances[i] = Vector3.Distance(Trajectory.Points[RootPointIndex].GetPosition(), Actor.Bones[i].Transform.position);
+                }
+                else
+                {
+                    distances[i] = Vector3.Distance(Actor.Bones[parents[i]].Transform.position, Actor.Bones[i].Transform.position);
+                }
+                UpVector[i] = Actor.Bones[i].Transform.rotation.GetUp();
+                ForwardVector[i] = Actor.Bones[i].Transform.rotation.GetForward();
+            }
+
             if (Controller.Styles.Length > 0)
             {
                 for (int i = 0; i < Trajectory.Points.Length; i++)
@@ -505,6 +532,7 @@ namespace SIGGRAPH_2018
                 Ups[i] = up;
                 Velocities[i] = velocity;
             }
+            start += JointDimOut * Actor.Bones.Length;
 
             // Basic Control working
             if (ControlManager.isBasicControl)
@@ -512,7 +540,7 @@ namespace SIGGRAPH_2018
                 if (ControlManager.isDash)
                 {
                     Framerate = 15;
-                }
+                } 
                 return;
             }
             Framerate = 30;
@@ -524,85 +552,36 @@ namespace SIGGRAPH_2018
             for (int i = 0; i < Actor.Bones.Length; i++)
             {
                 Actor.Bones[i].Transform.position = Positions[i];
-                Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);
-
-                // left arm add rotation
-                if (i >= 9 && i <= 12)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
-
-                // left hand add rotation
-                if (i >= 11 && i <= 12)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(0, 180, 0));
-
-                // right arm add rotation
-                if (i >= 14 && i <= 17)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-135, 0, -90));
-
-                // right hand add rotation
-                if (i >= 14 && i <= 17)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(0, -180, 0));
-
-                // left leg add rotation
-                if (i >= 18 && i <= 20)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(180, 180, 0));
-
-                // left foot add rotation
-                if (i >= 20 && i <= 20)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(135, 135, 135));
-
-                // left toe add rotation
-                if (i >= 21 && i <= 22)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, -45, -130));
-
-                // right leg add rotation
-                if (i >= 23 && i <= 25)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-180, -180, 0));
-
-                // right foot add rotation
-                if (i >= 25 && i <= 25)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(50, 0, 0));
-
-                // right toe add rotation
-                if (i >= 26 && i <= 27)
-                    Actor.Bones[i].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
-
+/*                Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);*/
             }
 
             foreach (int i in skeletons)
             {
-                Vector3 position = new Vector3(NN.GetOutput(start + i * JointDimOut + 0), NN.GetOutput(start + i * JointDimOut + 1), NN.GetOutput(start + i * JointDimOut + 2));
-                Vector3 forward = new Vector3(NN.GetOutput(start + i * JointDimOut + 3), NN.GetOutput(start + i * JointDimOut + 4), NN.GetOutput(start + i * JointDimOut + 5));
-                Vector3 up = new Vector3(NN.GetOutput(start + i * JointDimOut + 6), NN.GetOutput(start + i * JointDimOut + 7), NN.GetOutput(start + i * JointDimOut + 8));
-                Vector3 velocity = new Vector3(NN.GetOutput(start + i * JointDimOut + 9), NN.GetOutput(start + i * JointDimOut + 10), NN.GetOutput(start + i * JointDimOut + 11));
-
-                socket_input += Stylied(position, forward, up, velocity) + "|";
+                socket_input += Stylied(Positions[i], Forwards[i], Ups[i], Velocities[i]) + "|";
             }
 
-            start += JointDimOut * Actor.Bones.Length;
             ControlManager.jointInput = ControlManager.currentStyleIndex + "|" + socket_input;
             socket_input = "";
 
             if (ControlManager.jointOutput != "")
             {
                 string[] output = ControlManager.jointOutput.Split(',');
-                for (int i = 0; i < 21; i++)
+                for (int i = 0; i < skeletons.Count; i++)
                 {
-                    float scale = 7f;
-                    Vector3 position = new Vector3(float.Parse(output[i * JointDimOut + 0]) / scale * 1.5f, float.Parse(output[i * JointDimOut + 1]) / scale, float.Parse(output[i * JointDimOut + 2]) / scale).GetRelativePositionFrom(currentRoot);
+                    Vector3 position = new Vector3(float.Parse(output[i * JointDimOut + 0]), float.Parse(output[i * JointDimOut + 1]), float.Parse(output[i * JointDimOut + 2])).GetRelativePositionFrom(currentRoot);
                     Vector3 forward = new Vector3(float.Parse(output[i * JointDimOut + 3]), float.Parse(output[i * JointDimOut + 4]), float.Parse(output[i * JointDimOut + 5])).normalized.GetRelativeDirectionFrom(currentRoot);
                     Vector3 up = new Vector3(float.Parse(output[i * JointDimOut + 6]), float.Parse(output[i * JointDimOut + 7]), float.Parse(output[i * JointDimOut + 8])).normalized.GetRelativeDirectionFrom(currentRoot);
                     Vector3 velocity = new Vector3(float.Parse(output[i * JointDimOut + 9]), float.Parse(output[i * JointDimOut + 10]), float.Parse(output[i * JointDimOut + 11])).GetRelativeDirectionFrom(currentRoot);
 
                     Actor.Bones[skeletons[i]].Transform.position = Vector3.Lerp(Positions[skeletons[i]] + velocity / Framerate, position, 0.5f);
                     Actor.Bones[skeletons[i]].Transform.rotation = Quaternion.LookRotation(forward, up);
-
                     // left arm add rotation
                     if (skeletons[i] >= 9 && skeletons[i] <= 12)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, 75));
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
 
                     // left hand add rotation
                     if (skeletons[i] >= 11 && skeletons[i] <= 12)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(ControlManager.tempVector);
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 180, 0));
 
                     // right arm add rotation
                     if (skeletons[i] >= 14 && skeletons[i] <= 17)
@@ -635,6 +614,23 @@ namespace SIGGRAPH_2018
                     // right toe add rotation
                     if (skeletons[i] >= 26 && skeletons[i] <= 27)
                         Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
+                    Vector3 temp = ControlManager.tempVector[skeletons[i]];
+                    Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(temp);
+
+                }
+
+                Actor.Bones[0].Transform.position = Positions[0];
+                for (int i = 1; i < Actor.Bones.Length; i++)
+                {
+                    float distance = Vector3.Distance(Actor.Bones[parents[i]].Transform.position, Actor.Bones[i].Transform.position);
+
+                    float scale = distance / distances[i];
+
+                    Vector3 newPos = Actor.Bones[i].Transform.position - Actor.Bones[parents[i]].Transform.position; // 좌표계 변환
+                    newPos /= scale; // 축소
+                    newPos += Actor.Bones[parents[i]].Transform.position; // 좌표계 복구
+                    Actor.Bones[i].Transform.position = newPos;
+
                 }
             }
         }

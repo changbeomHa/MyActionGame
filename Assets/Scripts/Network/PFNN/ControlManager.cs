@@ -9,7 +9,8 @@ public class ControlManager : MonoBehaviour
     private Animator anim;
 
     public temp temp;
-    public static Vector3 tempVector;
+    public static List<Vector3> tempVector = new List<Vector3>(new Vector3[28]);
+    public static int tempI;
 
     public int styleIndex;
 
@@ -71,6 +72,7 @@ public class ControlManager : MonoBehaviour
             anim.enabled = isBasicControl;
         }
 
-        tempVector = new Vector3(temp.a, temp.b, temp.c);
+        tempVector[temp.i] = new Vector3(temp.a, temp.b, temp.c);
+        tempI = temp.i;
     }
 }
