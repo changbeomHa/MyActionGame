@@ -25,7 +25,8 @@ public class MovementInput : MonoBehaviour
 	private bool isGrounded;
 
 	[Header("Ä¿½ºÅÒ º¯¼ö")]
-	bool isDash;
+	public bool isDash;
+	public bool isPFNN;
 	Vector3 DashVec;
 
     void Start()
@@ -33,12 +34,17 @@ public class MovementInput : MonoBehaviour
 		anim = this.GetComponent<Animator>();
 		cam = Camera.main;
 		controller = this.GetComponent<CharacterController>();
+		isPFNN = this.GetComponent<SIGGRAPH_2018.BioAnimation_Adam>() != null;
 	}
 
 	void Update()
 	{
 		InputMagnitude();
 
+		if (!ControlManager.isBasicControl && isPFNN)
+		{
+			return;
+		}
 		isGrounded = controller.isGrounded;
 
 		if (isGrounded)
@@ -101,13 +107,17 @@ public class MovementInput : MonoBehaviour
 		//Physically move player
 		if (inputMagnitude > 0.1f)
 		{
-			anim.SetFloat("InputMagnitude", inputMagnitude * acceleration, .1f, Time.deltaTime);
-			PlayerMoveAndRotation();
-
 			if (Input.GetKeyDown(KeyCode.LeftShift) && !isDash)
 			{
 				Dash();
 			}
+
+			if (!ControlManager.isBasicControl && isPFNN)
+			{
+				return;
+			}
+			anim.SetFloat("InputMagnitude", inputMagnitude * acceleration, .1f, Time.deltaTime);
+			PlayerMoveAndRotation();
 		}
 		else
 		{
