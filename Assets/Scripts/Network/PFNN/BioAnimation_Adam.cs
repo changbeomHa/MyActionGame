@@ -363,7 +363,7 @@ namespace SIGGRAPH_2018
                 Trajectory.Points[i].SetVelocity(Trajectory.Points[i].GetVelocity() + translationalOffset.GetRelativeDirectionFrom(nextRoot) * Framerate);
             }
 
-            if (ControlManager.isBasicControl)
+            /*if (ControlManager.isBasicControl)
             {
                 start = TrajectoryDimOut * 6;
 
@@ -397,7 +397,7 @@ namespace SIGGRAPH_2018
                         Actor.Bones[skeletons[i]].Transform.position = Vector3.Lerp(Positions[skeletons[i]] + velocity / Framerate, position, 0.5f);
                         Actor.Bones[skeletons[i]].Transform.rotation = Quaternion.LookRotation(forward, up);
 
-                        // left arm add rotation
+*//*                        // left arm add rotation
                         if (skeletons[i] >= 9 && skeletons[i] <= 12)
                             Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
 
@@ -435,11 +435,11 @@ namespace SIGGRAPH_2018
 
                         // right toe add rotation
                         if (skeletons[i] >= 26 && skeletons[i] <= 27)
-                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
+                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));*//*
                     }
                 }
                 return;
-            }
+            }*/
 
             // post process for foot ik with ground
             for (int i = RootPointIndex; i < Trajectory.Points.Length; i += PointDensity)
@@ -552,7 +552,7 @@ namespace SIGGRAPH_2018
             for (int i = 0; i < Actor.Bones.Length; i++)
             {
                 Actor.Bones[i].Transform.position = Positions[i];
-/*                Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);*/
+                Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);
             }
 
             foreach (int i in skeletons)
@@ -575,7 +575,7 @@ namespace SIGGRAPH_2018
 
                     Actor.Bones[skeletons[i]].Transform.position = Vector3.Lerp(Positions[skeletons[i]] + velocity / Framerate, position, 0.5f);
                     Actor.Bones[skeletons[i]].Transform.rotation = Quaternion.LookRotation(forward, up);
-                    // left arm add rotation
+                    /*// left arm add rotation
                     if (skeletons[i] >= 9 && skeletons[i] <= 12)
                         Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
 
@@ -615,7 +615,7 @@ namespace SIGGRAPH_2018
                     if (skeletons[i] >= 26 && skeletons[i] <= 27)
                         Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));
                     Vector3 temp = ControlManager.tempVector[skeletons[i]];
-                    Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(temp);
+                    Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(temp);*/
 
                 }
 
