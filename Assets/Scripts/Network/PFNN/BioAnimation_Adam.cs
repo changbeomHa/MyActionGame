@@ -63,8 +63,8 @@ namespace SIGGRAPH_2018
                                                             });
         private List<int> skeletons = new List<int>(new int[] {
                                                                 0,
-                                                                23, 24, 25, 27,
-                                                                18, 19, 20, 22,
+                                                                23, 24, 25, 26,
+                                                                18, 19, 20, 21,
                                                                 2, 4, 5, 6,
                                                                 14, 15, 16, 17,
                                                                 9, 10, 11, 12
@@ -534,7 +534,7 @@ namespace SIGGRAPH_2018
             }
             start += JointDimOut * Actor.Bones.Length;
 
-            // Basic Control working
+/*            // Basic Control working
             if (ControlManager.isBasicControl)
             {
                 if (ControlManager.isDash)
@@ -543,11 +543,7 @@ namespace SIGGRAPH_2018
                 } 
                 return;
             }
-            Framerate = 30;
-
-            //Assign Posture
-            transform.position = nextRoot.GetPosition();
-            transform.rotation = nextRoot.GetRotation();
+            Framerate = 30;*/
 
 /*            for (int i = 0; i < Actor.Bones.Length; i++)
             {
@@ -576,68 +572,70 @@ namespace SIGGRAPH_2018
                     Actor.Bones[skeletons[i]].Transform.position = Vector3.Lerp(Positions[skeletons[i]] + velocity / Framerate, position, 0.5f);
                     Actor.Bones[skeletons[i]].Transform.rotation = Quaternion.LookRotation(forward, up);
 
+                    if(skeletons[i] == 12 || skeletons[i] == 17)
+                    {
+                        print(i);
+                        print(Actor.Bones[skeletons[i]].Transform.rotation);
+                    }
                     Vector3 temp = ControlManager.tempVector[skeletons[i]];
                     Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(temp);
 
-                    if (skeletons[i] == 18)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, -20));
-
-                    if (skeletons[i] == 19)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, -10));
-
-                    if (skeletons[i] == 23)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, 20));
-
-                    if (skeletons[i] == 24)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, 10));
-
-                    if (skeletons[i] == 11)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -60, 20));
-
-                    if (skeletons[i] == 12)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -60, 20));
-
-                    if (skeletons[i] == 16)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -20, 0));
-                    /*// left arm add rotation
-                    if (skeletons[i] >= 9 && skeletons[i] <= 12)
+                    // left arm - hand
+                    if (skeletons[i] == 9)
                         Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
+                    if (skeletons[i] == 10)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 90));
+                    if (skeletons[i] == 11)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(90, 0, 90));
 
-                    // left hand add rotation
-                    if (skeletons[i] >= 11 && skeletons[i] <= 12)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 180, 0));
+                    // right arm - hand
+                    if (skeletons[i] == 14)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, -100));
+                    if (skeletons[i] == 15)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, -85));
+                    if (skeletons[i] == 16)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(90, 0, -90));
 
-                    // right arm add rotation
-                    if (skeletons[i] >= 14 && skeletons[i] <= 17)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-135, 0, -90));
+                    // right leg - feet
+                    if (skeletons[i] == 18)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-8, -15, -200));
+                    if (skeletons[i] == 19)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-8, -15, -197.5f));
+                    if (skeletons[i] == 20)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-65, 25, -235));
+                    if (skeletons[i] == 21)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-65, 25, -235));
 
-                    // right hand add rotation
-                    if (skeletons[i] >= 14 && skeletons[i] <= 17)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -180, 0));
+                    // left leg - feet
+                    if (skeletons[i] == 23)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-5, -8, -160));
+                    if (skeletons[i] == 24)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -8, -160));
+                    if (skeletons[i] == 25)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-60, -52, -160));
+                    if (skeletons[i] == 26)
+                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-60, -52, -160));
 
-                    // left leg add rotation
-                    if (skeletons[i] >= 18 && skeletons[i] <= 20)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(180, 180, 0));
+                    /*                    if (skeletons[i] == 18)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, -20));
 
-                    // left foot add rotation
-                    if (skeletons[i] >= 20 && skeletons[i] <= 20)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(135, 135, 135));
+                                        if (skeletons[i] == 19)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, -10));
 
-                    // left toe add rotation
-                    if (skeletons[i] >= 21 && skeletons[i] <= 22)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, -45, -130));
+                                        if (skeletons[i] == 23)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, 20));
 
-                    // right leg add rotation
-                    if (skeletons[i] >= 23 && skeletons[i] <= 25)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-180, -180, 0));
+                                        if (skeletons[i] == 24)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, 0, 10));
 
-                    // right foot add rotation
-                    if (skeletons[i] >= 25 && skeletons[i] <= 25)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(50, 0, 0));
+                                        if (skeletons[i] == 11)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -60, 20));
 
-                    // right toe add rotation
-                    if (skeletons[i] >= 26 && skeletons[i] <= 27)
-                        Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(-90, 0, 180));*/
+                                        if (skeletons[i] == 12)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -60, 20));
+
+                                        if (skeletons[i] == 16)
+                                            Actor.Bones[skeletons[i]].Transform.rotation *= Quaternion.Euler(new Vector3(0, -20, 0));*/
 
                 }
 
@@ -653,17 +651,12 @@ namespace SIGGRAPH_2018
                     newPos += Actor.Bones[parents[i]].Transform.position; // 좌표계 복구
                     Actor.Bones[i].Transform.position = newPos;
 
-                    if(i == 12 || i == 17)
-                    {
-                        print(i);
-                        print(Actor.Bones[i].Transform.rotation);
-                        Actor.Bones[i].Transform.rotation = Actor.Bones[i - 1].Transform.rotation;
-                        print(Actor.Bones[i].Transform.rotation);
-                        print(Actor.Bones[i].GetName());
-                        print("--------------");
-                    }
                 }
             }
+
+            //Assign Posture
+            transform.position = nextRoot.GetPosition();
+            transform.rotation = nextRoot.GetRotation();
         }
 
         private Vector3 RotationByCamera()
