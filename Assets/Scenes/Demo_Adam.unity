@@ -684,6 +684,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 185576495}
+  - component: {fileID: 185576496}
   m_Layer: 0
   m_Name: mixamorig:RightShoulder
   m_TagString: Untagged
@@ -706,6 +707,20 @@ Transform:
   m_Father: {fileID: 1973899958}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &185576496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185576494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Position: {x: -0.01, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &192200320
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,7 +1016,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Folder: Assets\Scripts\Network\PFNN\DeepLearning\Parameters\trained_Adam
   Destination: Assets\Scripts\Network\PFNN\DeepLearning\Parameters
-  Parameters: {fileID: 0}
+  Parameters: {fileID: 11400000, guid: 67e283470a2884445a38747d7fa25deb, type: 2}
   XDim: 468
   HDim: 512
   YDim: 376
@@ -1664,6 +1679,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 286818002}
+  - component: {fileID: 286818003}
   m_Layer: 0
   m_Name: mixamorig:RightArm
   m_TagString: Untagged
@@ -1686,6 +1702,20 @@ Transform:
   m_Father: {fileID: 185576495}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &286818003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286818001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Position: {x: -0.03333334, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &339611342
 GameObject:
   m_ObjectHideFlags: 0
@@ -4843,6 +4873,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1451666450}
+  - component: {fileID: 1451666451}
   m_Layer: 0
   m_Name: mixamorig:LeftShoulder
   m_TagString: Untagged
@@ -4865,6 +4896,20 @@ Transform:
   m_Father: {fileID: 1973899958}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1451666451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451666449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Position: {x: 0.01, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &1459598889
 GameObject:
   m_ObjectHideFlags: 0
@@ -5148,7 +5193,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1550678539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7949,6 +7994,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2034243834}
+  - component: {fileID: 2034243835}
   m_Layer: 0
   m_Name: mixamorig:LeftArm
   m_TagString: Untagged
@@ -7971,6 +8017,20 @@ Transform:
   m_Father: {fileID: 1451666450}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2034243835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034243833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Position: {x: 0.03333334, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &2036807342
 GameObject:
   m_ObjectHideFlags: 0
