@@ -5266,7 +5266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Folder: Assets\Scripts\Network\PFNN\DeepLearning\Parameters\trained_Adam
   Destination: Assets\Scripts\Network\PFNN\DeepLearning\Parameters
-  Parameters: {fileID: 11400000, guid: 67e283470a2884445a38747d7fa25deb, type: 2}
+  Parameters: {fileID: 0}
   XDim: 468
   HDim: 512
   YDim: 376
