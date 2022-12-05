@@ -719,7 +719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Position: {x: -0.01, y: 0, z: 0}
+  Position: {x: 0.01, y: 0, z: 0}
   Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &192200320
 GameObject:
@@ -1714,7 +1714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Position: {x: -0.03333334, y: 0, z: 0}
+  Position: {x: 0.03333334, y: 0, z: 0}
   Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &339611342
 GameObject:
@@ -4908,7 +4908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Position: {x: 0.01, y: 0, z: 0}
+  Position: {x: -0.01, y: 0, z: 0}
   Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &1459598889
 GameObject:
@@ -8029,7 +8029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dd4352539434fce96c8a366c67c61d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Position: {x: 0.03333334, y: 0, z: 0}
+  Position: {x: -0.03333334, y: 0, z: 0}
   Rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &2036807342
 GameObject:
