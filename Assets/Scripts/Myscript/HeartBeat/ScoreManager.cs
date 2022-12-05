@@ -82,7 +82,7 @@ public class ScoreManager : MonoBehaviour
             if (p_JudgementState == 0)
             {
                 awakeningCombo += 1;
-                if (awakeningCombo >= 4)
+                if (awakeningCombo >= 2)
                 {
                     playerCombat.nowPowerful = true;
                     playerCombat.AwakeningOK.color = Color.red;
